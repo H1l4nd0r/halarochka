@@ -36,14 +36,14 @@
 
                 <div class="mb-3">
                     <label for="factday" class="form-label">Дата платежа</label>
-                    <input type="date" class="form-control" id="factday" name="factday" required>
+                    <input type="date" class="form-control" id="factday" name="factday" required value="{{ old('factday') }}">
                     @error('factday')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label for="summ" class="form-label">Сумма</label>
-                    <input type="text" class="form-control" id="last_name"  name="summ" required>
+                    <input type="text" class="form-control" id="last_name"  name="summ" required value="{{ old('summ') }}">
                     @error('summ')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror

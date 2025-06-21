@@ -42,33 +42,37 @@ class DealsController extends Controller
      */
     public function store()
     {
-        request()->validate([
-            'goodname' => ['required'],
-            'startprice' => ['required'],
-            'firstpayment' => ['required'],
-            'term' => ['required'],
-            'client_id' => ['required'],
-        ]);
-        $client = Client::find(request('client_id'));
-        $deal = $client->deals()->create([
-            'goodname' => request('goodname'),
-            'startprice' => request('startprice'),
-            'firstpayment' => request('firstpayment'),
-            'term' => request('term'),
-            'status' => 0, // TODO status model
-        ]);
-
-        for($i=0;$i<$deal->term;$i++){
-            Payday::create([
-                'deal_id' => $deal->id,
-                'payday' => \Illuminate\Support\Carbon::now()->addMonths($i+1),
-                'status' => 0,
-                'fullsumm' => $deal->startprice/$deal->term,
-                'leftsumm' => $deal->startprice/$deal->term
+        try{
+            request()->validate([
+                'goodname' => ['required'],
+                'startprice' => ['required','min:5'],
+                'firstpayment' => ['required'],
+                'term' => ['required'],
+                'client_id' => ['required'],
             ]);
-        }
+            $client = Client::find(request('client_id'));
+            $deal = $client->deals()->create([
+                'goodname' => request('goodname'),
+                'startprice' => request('startprice'),
+                'firstpayment' => request('firstpayment'),
+                'term' => request('term'),
+                'status' => 0, // TODO status model
+            ]);
 
-        return redirect('/deals');
+            for($i=0;$i<$deal->term;$i++){
+                Payday::create([
+                    'deal_id' => $deal->id,
+                    'payday' => \Illuminate\Support\Carbon::now()->addMonths($i+1),
+                    'status' => 0,
+                    'fullsumm' => $deal->startprice/$deal->term,
+                    'leftsumm' => $deal->startprice/$deal->term
+                ]);
+            }
+
+            return redirect('/deals');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        }
     }
 
     /**

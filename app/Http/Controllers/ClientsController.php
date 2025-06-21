@@ -35,22 +35,25 @@ class ClientsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
-    {
-        $validated  = request()->validate([
-            'first_name' => ['required'],
-            'middle_name' => ['required'],
-            'last_name' => ['required'],
-            'borndate' => ['required','date'],
-            'phone' => ['required','regex:/^\+7\d{10}/i'],
-            'email' => ['required','email'],
-            'iddoc' => ['required'],
-            'idnum' => ['required','min:10'],
-        ]);
-        
-        Client::create($validated);
-
-        return redirect('/clients');
+    public function store(){
+        try {
+            request()->validate([
+                'first_name' => ['required'],
+                'middle_name' => ['required'],
+                'last_name' => ['required'],
+                'borndate' => ['required','date'],
+                'phone' => ['required','regex:/^\+7\d{10}/i'],
+                'email' => ['required','email'],
+                'iddoc' => ['required'],
+                'idnum' => ['required','min:10'],
+            ]);
+            
+            Client::create(request()->all());
+            
+            return redirect('/clients');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        }
     }
 
     /**

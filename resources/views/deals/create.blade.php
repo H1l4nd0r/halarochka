@@ -26,28 +26,28 @@
 
                 <div class="mb-3">
                     <label for="goodname" class="form-label">Описание сделки/товара</label>
-                    <textarea class="form-control" id="goodname" rows="3" name="goodname"></textarea>
+                    <textarea class="form-control" id="goodname" rows="3" name="goodname" value="{{ old('goodname') }}"></textarea>
                     @error('goodname')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label for="startprice" class="form-label">Начальная цена товара</label>
-                    <input type="number" class="form-control" id="startprice" name="startprice">
+                    <input type="number" class="form-control" id="startprice" name="startprice" value="{{ old('startprice') }}">
                     @error('startprice')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label for="firstpayment" class="form-label">Первоначальный взнос</label>
-                    <input type="number" class="form-control" id="firstpayment" name="firstpayment">
+                    <input type="number" class="form-control" id="firstpayment" name="firstpayment" value="{{ old('firstpayment') }}">
                     @error('firstpayment')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label for="term" class="form-label">Срок (мес)</label>
-                    <input type="number" class="form-control" id="term" name="term">
+                    <input type="number" class="form-control" id="term" name="term" value="{{ old('term') }}">
                     @error('term')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror

@@ -36,50 +36,54 @@ class RepaymentsController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate([
-            'factday' => ['required'],
-            'summ' => ['required'],
-            'deal_id' => ['required'],
-        ]);
+        try{
+            request()->validate([
+                'factday' => ['required'],
+                'summ' => ['required','min:3'],
+                'deal_id' => ['required'],
+            ]);
 
-        $paidsumm = request('summ');
-        $deal = Deal::find(request('deal_id'));
-        $rep = $deal->repayments()->create([
-            'factday' => request('factday'),
-            'summ' => $paidsumm,
-            'deal_id' => request('deal_id'),
-            'status' => 1, // TODO status model
-        ]);
+            $paidsumm = request('summ');
+            $deal = Deal::find(request('deal_id'));
+            $rep = $deal->repayments()->create([
+                'factday' => request('factday'),
+                'summ' => $paidsumm,
+                'deal_id' => request('deal_id'),
+                'status' => 1, // TODO status model
+            ]);
 
-        // process schedule
-        $paydays = $deal->schedule()->where('status','<',2)->get();
-        $allpaid = true;
-        foreach($paydays as $pd){
-            if($paidsumm >= $pd->leftsumm){
-                $paidsumm-=$pd->leftsumm;
-                $pd->leftsumm = 0;
-                $pd->status = 2;
-            }else if($paidsumm < $pd->leftsumm){
-                $pd->leftsumm -= $paidsumm;
-                $pd->status = 1;
-                $paidsumm = 0;
-                $allpaid = false;
+            // process schedule
+            $paydays = $deal->schedule()->where('status','<',2)->get();
+            $allpaid = true;
+            foreach($paydays as $pd){
+                if($paidsumm >= $pd->leftsumm){
+                    $paidsumm-=$pd->leftsumm;
+                    $pd->leftsumm = 0;
+                    $pd->status = 2;
+                }else if($paidsumm < $pd->leftsumm){
+                    $pd->leftsumm -= $paidsumm;
+                    $pd->status = 1;
+                    $paidsumm = 0;
+                    $allpaid = false;
+                }
+
+                $pd->save();
+
+                if($paidsumm==0) break;
             }
 
-            $pd->save();
+            if($allpaid){
+                $deal->status = 2; // all paid, change status to closed
+            }else{
+                $deal->status = 1; // some paid, change status to closed
+            }
 
-            if($paidsumm==0) break;
+            $deal->save();
+
+            return redirect('/deals/' . request('deal_id'));
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
         }
-
-        if($allpaid){
-            $deal->status = 2; // all paid, change status to closed
-        }else{
-            $deal->status = 1; // some paid, change status to closed
-        }
-
-        $deal->save();
-
-        return redirect('/deals/' . request('deal_id'));
     }
 
     /**
