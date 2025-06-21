@@ -37,7 +37,7 @@ class ClientsController extends Controller
      */
     public function store()
     {
-        request()->validate([
+        $validated  = request()->validate([
             'first_name' => ['required'],
             'middle_name' => ['required'],
             'last_name' => ['required'],
@@ -47,16 +47,9 @@ class ClientsController extends Controller
             'iddoc' => ['required'],
             'idnum' => ['required','min:10'],
         ]);
-        Client::create([
-            'first_name' => request('first_name'),
-            'middle_name' => request('middle_name'),
-            'last_name' => request('last_name'),
-            'borndate' => request('borndate'),
-            'phone' => request('phone'),
-            'email' => request('email'),
-            'iddoc' => request('iddoc'),
-            'idnum' => request('idnum'),
-        ]);
+        
+        Client::create($validated);
+
         return redirect('/clients');
     }
 
