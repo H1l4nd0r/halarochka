@@ -24,7 +24,7 @@ class DealsController extends Controller
      */
     public function create(){
         return view('deals.create',[
-            'clients' => Client::all()
+            'clients' => Client::orderBy('last_name', 'asc')->get()
         ]);
     }
 
@@ -74,13 +74,40 @@ class DealsController extends Controller
             return back()->withErrors($e->validator)->withInput();
         }
     }
+    /**
+     * Edit the specified resource.
+     */
+    public function edit(Deal $deal)
+    {
+        return view('deals.edit', [
+            'deal' => $deal ,
+            'clients' => Client::orderBy('last_name', 'asc')->get()
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Deal $deal)
+    public function update(Deal $deal)
     {
-        //
+        request()->validate([
+            'goodname' => ['required'],
+            'startprice' => ['required','min:5'],
+            'firstpayment' => ['required'],
+            'term' => ['required'],
+            'client_id' => ['required'],
+        ]);
+        $client = Client::find(request('client_id'));
+        $deal->update([
+            'goodname' => request('goodname'),
+            'startprice' => request('startprice'),
+            'firstpayment' => request('firstpayment'),
+            'term' => request('term'),
+            'client_id' =>$client->id
+        ]);
+
+        // TODO regenerate schedule and redistribute repayments
+        return redirect('/deals/' . $deal->id);
     }
 
     /**

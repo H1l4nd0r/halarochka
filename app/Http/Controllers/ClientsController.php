@@ -13,7 +13,7 @@ class ClientsController extends Controller
     public function index()
     {
         return view('clients.index',[
-            'clients' => Client::all()->sortByDesc('created_at')
+            'clients' => Client::orderBy('last_name', 'asc')->get()
         ] );
     }
 
