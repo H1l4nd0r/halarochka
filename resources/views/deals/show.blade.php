@@ -19,7 +19,7 @@
             <p class="card-text">Клиент: {{ $deal->client->last_name }} {{ $deal->client->first_name }} {{ $deal->client->middle_name }}</p>
             <p class="card-text">Товар: {{ $deal->goodname }} </p>
             <p class="card-text">Договор: {{ $deal->id }} от {{ $deal->created_at }} </p>
-            <p class="card-text">Статус: {{ $deal->status }}</p>
+            <p class="card-text">Статус: {{ $deal->status_text }}</p>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
               <div class="col-sm-3">{{ $payday->payday }}</div>
               <div class="col-sm-3">{{ $payday->fullsumm }}</div>
               <div class="col-sm-3">{{ $payday->leftsumm }}</div>
-              <div class="col-sm-3">{{ $payday->status }}</div>
+              <div class="col-sm-3">{{ $payday->status_text }}</div>
             </div>
               
             @endforeach

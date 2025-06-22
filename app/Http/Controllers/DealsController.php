@@ -15,7 +15,7 @@ class DealsController extends Controller
     public function index()
     {
         return view('deals.index', [
-            'deals' => Deal::all()
+            'deals' => Deal::all()->sortByDesc('created_at')
         ]);
     }
 

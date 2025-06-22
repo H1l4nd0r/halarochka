@@ -17,7 +17,7 @@
       <th scope="col">№</th>
       <th scope="col">Дата записи</th>
       <th scope="col">Цена товара</th>
-      <th scope="col">Первоначальный взнос</th>
+      <th scope="col">Взнос</th>
       <th scope="col">Статус</th>
       <th scope="col">Товар</th>
     </tr>
@@ -29,7 +29,7 @@
       <td><a href="/deals/{{ $deal->id }}">{{ $deal->created_at }}</a></td>
       <td>{{ $deal->startprice }}</td>
       <td>{{ $deal->firstpayment }}</td>
-      <td>{{ $deal->status }}</td>
+      <td>{{ $deal->status_text }}</td>
       <td>{{ $deal->goodname }}</td>
     </tr>
     @endforeach

@@ -12,6 +12,18 @@ class Payday extends Model
     
     protected $guarded = [];
     
+    public function getStatusTextAttribute()
+    {
+        $statuses = [
+            0 => 'Не закрыт',
+            1 => 'Частично закрыт',
+            2 => 'Закрыт',
+            // Add more mappings as needed
+        ];
+        
+        return $statuses[$this->status] ?? 'Unknown';
+    }
+
     public function deal(){
         return $this->belongsTo(Deal::class);
     }

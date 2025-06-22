@@ -14,7 +14,7 @@ class RepaymentsController extends Controller
     public function index()
     {
         return view('repayments.index', [
-            'repayments' => Repayment::with('deal')->get()
+            'repayments' => Repayment::with('deal')->latest()->get()
         ]);        
     }
 
@@ -43,6 +43,7 @@ class RepaymentsController extends Controller
                 'deal_id' => ['required'],
             ]);
 
+            // TODO separate repayment distribution to reuse in deal edit action
             $paidsumm = request('summ');
             $deal = Deal::find(request('deal_id'));
             $rep = $deal->repayments()->create([

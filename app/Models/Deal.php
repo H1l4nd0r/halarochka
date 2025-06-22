@@ -12,6 +12,19 @@ class Deal extends Model
 
     protected $guarded = [];
 
+    public function getStatusTextAttribute()
+{
+        $statuses = [
+            0 => 'Новый',
+            1 => 'Не закрыт. Была оплат.',
+            2 => 'Закрыт',
+            3 => 'Просрочен',
+            // Add more mappings as needed
+        ];
+        
+        return $statuses[$this->status] ?? 'Unknown';
+    }
+    
     public function client(){
         return $this->belongsTo(Client::class);
     }
