@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('goodname');
             $table->integer('startprice');
             $table->integer('firstpayment');
+            $table->integer('fee');
             $table->integer('term');
             $table->integer('status');
             $table->timestamps();

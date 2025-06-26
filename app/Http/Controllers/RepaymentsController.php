@@ -26,7 +26,7 @@ class RepaymentsController extends Controller
 
         return view('repayments.create', [
             'deal' => $deal_id? Deal::find($deal_id):false,
-            'deals' => $deal_id? []:Deal::all(),
+            'deals' => $deal_id? []:Deal::with('client')->get(),
         ]);
         
     }

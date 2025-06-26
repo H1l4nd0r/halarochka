@@ -46,6 +46,13 @@
                     @enderror
                 </div>
                 <div class="mb-3">
+                    <label for="fee" class="form-label">Наценка</label>
+                    <input type="number" class="form-control" id="fee" name="fee" value="{{ $deal->fee }}">
+                    @error('fee')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+                <div class="mb-3">
                     <label for="term" class="form-label">Срок (мес)</label>
                     <input type="number" class="form-control" id="term" name="term" value="{{ $deal->term }}">
                     @error('term')

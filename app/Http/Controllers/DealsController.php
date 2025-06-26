@@ -47,15 +47,24 @@ class DealsController extends Controller
                 'goodname' => ['required'],
                 'startprice' => ['required','min:5'],
                 'firstpayment' => ['required'],
+                'fee' => ['required'],
                 'term' => ['required'],
                 'client_id' => ['required'],
             ]);
+
             $client = Client::find(request('client_id'));
+
+            $fullprice = request('startprice') + \ceil(request('startprice')*request('fee')/100);
+            $monthly = \ceil($fullprice/request('term'));
+            $fullprice = $monthly * request('term'); // to negotiate round fraction
+            
             $deal = $client->deals()->create([
                 'goodname' => request('goodname'),
                 'startprice' => request('startprice'),
                 'firstpayment' => request('firstpayment'),
                 'term' => request('term'),
+                'fee' => request('fee'),
+                'fullprice' => $fullprice,
                 'status' => 0, // TODO status model
             ]);
 
@@ -64,8 +73,8 @@ class DealsController extends Controller
                     'deal_id' => $deal->id,
                     'payday' => \Illuminate\Support\Carbon::now()->addMonths($i+1),
                     'status' => 0,
-                    'fullsumm' => $deal->startprice/$deal->term,
-                    'leftsumm' => $deal->startprice/$deal->term
+                    'fullsumm' => $monthly,
+                    'leftsumm' => $monthly
                 ]);
             }
 
