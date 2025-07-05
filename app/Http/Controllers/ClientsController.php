@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ClientsController extends Controller
 {
@@ -52,7 +53,7 @@ class ClientsController extends Controller
             $fileData = [];
     
             foreach (request()->file('files') as $file) {
-                $path = $file->store('public/uploads');
+                $path = $file->store('uploads', 'public');
                 
                 $fileData[] = [
                     'path' => str_replace('public/', '', $path),
@@ -100,7 +101,7 @@ class ClientsController extends Controller
         $fileData = [];
     
         foreach (request()->file('files') as $file) {
-            $path = $file->store('public/uploads');
+            $path = $file->store('uploads', 'public');
             
             $fileData[] = [
                 'path' => str_replace('public/', '', $path),

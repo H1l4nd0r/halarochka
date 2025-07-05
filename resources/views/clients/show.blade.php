@@ -63,9 +63,10 @@
       <div class="card-body">
         @foreach(json_decode($client->files, true) ?? [] as $index => $file)
           <div class="document">
-              <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
-                  {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)
-          </img>
+              <a target="_blank" href="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
+                  {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
+                  <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}" class="col-sm-4"/>
+              </a>
 
           </div>
       @endforeach
