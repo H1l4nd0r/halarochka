@@ -20,7 +20,8 @@ class Client extends Model
         'phone' ,
         'email' ,
         'iddoc' ,
-        'idnum' 
+        'idnum' ,
+        'files'
     ];
 
     public function deals(){

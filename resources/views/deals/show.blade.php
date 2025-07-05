@@ -8,6 +8,7 @@
   <div class="card-body">
     <div class="card-title d-flex justify-content-between">
       <h5></h5>
+      <x-abutton href="/deals/{{$deal->id}}/pdf">Скачать в PDF</x-abutton>
       <x-abutton href="/deals">Закрыть</x-abutton>
     </div>
 
@@ -29,7 +30,9 @@
             <h5 class="card-title">Условия</h5>
             <p class="card-text">Цена товара: {{ $deal->startprice }} </p>
             <p class="card-text">Первый взнос: {{ $deal->firstpayment }} </p>
+            <p class="card-text">Наценка: {{ $deal->fee }}%</p>
             <p class="card-text">Срок: {{ $deal->term }} мес </p>
+            <p class="card-text">Полная стоимость рассрочки: {{ $deal->fullprice }} </p>
           </div>
         </div>
       </div>  

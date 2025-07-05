@@ -43,6 +43,7 @@ Route::patch('/clients/{client}', [ClientsController::class, 'update'])->middlew
 Route::get('/deals',[ DealsController::class, 'index'])->middleware('auth');
 Route::get('/deals/create', [DealsController::class, 'create'])->middleware('auth');
 Route::post('/deals', [DealsController::class, 'store'])->middleware('auth')->can('admin');
+Route::get('/deals/{deal}/pdf', [DealsController::class, 'pdf'])->middleware('auth');
 Route::get('/deals/{deal}', [DealsController::class, 'show'])->middleware('auth');
 Route::get('/deals/{deal}/edit', [DealsController::class, 'edit'])->middleware('auth')->can('admin');
 Route::patch('/deals/{deal}', [DealsController::class, 'update'])->middleware('auth')->can('admin');

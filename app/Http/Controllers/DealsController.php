@@ -6,6 +6,7 @@ use App\Models\Deal;
 use App\Models\Client;
 use App\Models\Payday;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DealsController extends Controller
 {
@@ -15,7 +16,7 @@ class DealsController extends Controller
     public function index()
     {
         return view('deals.index', [
-            'deals' => Deal::all()->sortByDesc('created_at')
+            'deals' => Deal::with('client')->orderBy('created_at','desc')->get()
         ]);
     }
 
@@ -35,6 +36,21 @@ class DealsController extends Controller
         return view('deals.show', [
             'deal' => $deal,
         ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function pdf(Deal $deal){
+        $pdf = Pdf::loadView('deals.schedulepdf', [
+            'deal' => $deal,
+        ])->setOption([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'isPhpEnabled' => true,
+        ]);
+
+        return $pdf->download('Dogovor' . $deal->id . '.pdf');
     }
 
     /**

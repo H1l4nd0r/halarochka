@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamp('factday');
             $table->integer('status');
             $table->integer('summ');
+            $table->json('files')->nullable();
             $table->timestamps();
         });
     }

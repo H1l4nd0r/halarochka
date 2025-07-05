@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('borndate');
             $table->string('iddoc');
             $table->string('idnum');
+            $table->json('files')->nullable();
             $table->timestamps();
         });
     }

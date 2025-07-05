@@ -37,6 +37,11 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // TODO combine with login
+        $rolesData = Auth::user()->with('roles')->get()->toArray();
+        $roles = array_column($rolesData[0]['roles'], 'name');
+        request()->session()->put('roles', $roles);
+
         return redirect('/dashboard');
     }
 }

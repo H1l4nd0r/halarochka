@@ -26,6 +26,11 @@ class SessionController extends Controller
 
         request()->session()->regenerate();
         
+        // TODO combine with registration
+        $rolesData = Auth::user()->with('roles')->get()->toArray();
+        $roles = array_column($rolesData[0]['roles'], 'name');
+        request()->session()->put('roles', $roles);
+        
         return redirect('/dashboard');
     }
 

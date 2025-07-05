@@ -2,8 +2,10 @@
 @section('content')
 
 <div class="container mt-3">
-  
-<div class="card">
+
+<div class="row">
+<div class="col-md-6">
+  <div class="card">
   
   <div class="card-body">
     <div class="card-title d-flex justify-content-between">
@@ -37,5 +39,51 @@
     @endcan
     
   </div>
+</div>
+</div>
+<div class="col-md-6">
+  <div class="card">
+  
+  <div class="card-body">
+    <div class="card-title d-flex justify-content-between">
+      <h5>Договоры</h5>
+    </div>
 
+    <div class="card">
+      <div class="card-body">
+        @foreach ($client->deals as $deal)
+        <ul>
+          <li>№ {{ $deal->id }} от <a href="/deals/{{ $deal->id }}/edit">{{ $deal->created_at }}</a>  на сумму {{ $deal->startprice }}</li>
+        </ul>
+        @endforeach
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        @foreach(json_decode($client->files, true) ?? [] as $index => $file)
+          <div class="document">
+              <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
+                  {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)
+          </img>
+
+          </div>
+      @endforeach
+      </div>
+    </div>
+
+    
+    
+    @can('admin')
+    <x-abutton href="/deals/create">Добавить</x-abutton>  
+    @endcan
+    
+  </div>
+</div>
+</div>  
+</div>
+
+
+
+</div>
 @endsection

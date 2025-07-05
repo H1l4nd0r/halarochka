@@ -9,7 +9,7 @@
             <div class="card-title d-flex justify-content-end">
                 <x-abutton href="/clients/{{ $client->id }}">Отмена</x-abutton>
             </div>
-            <form method="POST" action="/clients/{{ $client->id }}">
+            <form method="POST" action="/clients/{{ $client->id }}" enctype="multipart/form-data">
 @csrf
 @method('PATCH')
 
@@ -68,6 +68,11 @@
                     @error('idnum')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Загрузить документ</label>
+                    <input class="form-control" type="file" id="formFile" name="files[]" multiple>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Сохранить</button>

@@ -9,7 +9,7 @@
             <div class="card-title d-flex justify-content-end">
                 <x-abutton href="/clients">Отмена</x-abutton>
             </div>
-            <form method="post" action="/clients">
+            <form method="post" action="/clients" enctype="multipart/form-data">
 @csrf
                 <div class="mb-3">
                     <label for="first_name" class="form-label">Имя</label>
@@ -50,6 +50,11 @@
                     <label for="idnum" class="form-label">Серия и номер документа</label>
                     <input type="text" class="form-control" id="idnum"  name="idnum" required value="{{ old('idnum') }}">
                     <x-form-error name="idnum"/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Загрузить документ</label>
+                    <input class="form-control" type="file" id="formFile" name="files[]" multiple>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Сохранить</button>

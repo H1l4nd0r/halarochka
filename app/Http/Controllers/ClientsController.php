@@ -37,7 +37,7 @@ class ClientsController extends Controller
      */
     public function store(){
         try {
-            request()->validate([
+            $validated = request()->validate([
                 'first_name' => ['required'],
                 'middle_name' => ['required'],
                 'last_name' => ['required'],
@@ -46,9 +46,25 @@ class ClientsController extends Controller
                 'email' => ['required','email'],
                 'iddoc' => ['required'],
                 'idnum' => ['required','min:10'],
+                'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
             ]);
+
+            $fileData = [];
+    
+            foreach (request()->file('files') as $file) {
+                $path = $file->store('public/uploads');
+                
+                $fileData[] = [
+                    'path' => str_replace('public/', '', $path),
+                    'name' => $file->getClientOriginalName(),
+                    'type' => $file->getClientMimeType(),
+                    'size' => $file->getSize(),
+                    'uploaded_at' => now()->toDateTimeString(),
+                ];
+            }
+            $validated['files'] = \json_encode($fileData);
             
-            Client::create(request()->all());
+            Client::create($validated);
             
             return redirect('/clients');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -69,7 +85,7 @@ class ClientsController extends Controller
      */
     public function update(Client $client)
     {
-        request()->validate([
+        $validated = request()->validate([
             'first_name' => ['required'],
             'middle_name' => ['required'],
             'last_name' => ['required'],
@@ -78,18 +94,25 @@ class ClientsController extends Controller
             'email' => ['required','email'],
             'iddoc' => ['required'],
             'idnum' => ['required','min:10'],
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
         ]);
 
-        $client->update([
-            'first_name' => request('first_name'),
-            'middle_name' => request('middle_name'),
-            'last_name' => request('last_name'),
-            'borndate' => request('borndate'),
-            'phone' => request('phone'),
-            'email' => request('email'),
-            'iddoc' => request('iddoc'),
-            'idnum' => request('idnum'),
-        ]);
+        $fileData = [];
+    
+        foreach (request()->file('files') as $file) {
+            $path = $file->store('public/uploads');
+            
+            $fileData[] = [
+                'path' => str_replace('public/', '', $path),
+                'name' => $file->getClientOriginalName(),
+                'type' => $file->getClientMimeType(),
+                'size' => $file->getSize(),
+                'uploaded_at' => now()->toDateTimeString(),
+            ];
+        }
+        $validated['files'] = \json_encode($fileData);
+
+        $client->update($validated);
         return redirect('/clients/' . $client->id);
     }
 

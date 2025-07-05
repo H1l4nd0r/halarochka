@@ -19,7 +19,9 @@ return new class extends Migration
             $table->integer('firstpayment');
             $table->integer('fee');
             $table->integer('term');
+            $table->integer('fullprice');
             $table->integer('status');
+            $table->json('files')->nullable();
             $table->timestamps();
         });
     }
