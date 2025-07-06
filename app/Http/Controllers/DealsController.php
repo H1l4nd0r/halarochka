@@ -59,13 +59,14 @@ class DealsController extends Controller
     public function store()
     {
         try{
-            request()->validate([
+            $validated = request()->validate([
                 'goodname' => ['required'],
                 'startprice' => ['required','min:5'],
                 'firstpayment' => ['required'],
                 'fee' => ['required'],
                 'term' => ['required'],
                 'client_id' => ['required'],
+                'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
             ]);
 
             $client = Client::find(request('client_id'));
@@ -73,16 +74,25 @@ class DealsController extends Controller
             $fullprice = request('startprice') + \ceil(request('startprice')*request('fee')/100);
             $monthly = \ceil($fullprice/request('term'));
             $fullprice = $monthly * request('term'); // to negotiate round fraction
+
+            $fileData = [];
+    
+            foreach (request()->file('files') as $file) {
+                $path = $file->store('uploads', 'public');
+                
+                $fileData[] = [
+                    'path' => str_replace('public/', '', $path),
+                    'name' => $file->getClientOriginalName(),
+                    'type' => $file->getClientMimeType(),
+                    'size' => $file->getSize(),
+                    'uploaded_at' => now()->toDateTimeString(),
+                ];
+            }
+            $validated['files'] = json_encode($fileData);
+            $validated['fullprice'] = $fullprice;
+            $validated['status'] = 0;
             
-            $deal = $client->deals()->create([
-                'goodname' => request('goodname'),
-                'startprice' => request('startprice'),
-                'firstpayment' => request('firstpayment'),
-                'term' => request('term'),
-                'fee' => request('fee'),
-                'fullprice' => $fullprice,
-                'status' => 0, // TODO status model
-            ]);
+            $deal = Deal::create($validated);
 
             for($i=0;$i<$deal->term;$i++){
                 Payday::create([
@@ -115,21 +125,33 @@ class DealsController extends Controller
      */
     public function update(Deal $deal)
     {
-        request()->validate([
+        $validated = request()->validate([
             'goodname' => ['required'],
             'startprice' => ['required','min:5'],
             'firstpayment' => ['required'],
             'term' => ['required'],
             'client_id' => ['required'],
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
         ]);
         $client = Client::find(request('client_id'));
-        $deal->update([
-            'goodname' => request('goodname'),
-            'startprice' => request('startprice'),
-            'firstpayment' => request('firstpayment'),
-            'term' => request('term'),
-            'client_id' =>$client->id
-        ]);
+
+        $fileData = [];
+    
+        foreach (request()->file('files') as $file) {
+            $path = $file->store('uploads', 'public');
+            
+            $fileData[] = [
+                'path' => str_replace('public/', '', $path),
+                'name' => $file->getClientOriginalName(),
+                'type' => $file->getClientMimeType(),
+                'size' => $file->getSize(),
+                'uploaded_at' => now()->toDateTimeString(),
+            ];
+        }
+        $validated['files'] = $validated['files'] = array_merge($deal->files, $fileData);
+        $validated['client_id'] = $client->id;
+
+        $deal->update($validated);
 
         // TODO regenerate schedule and redistribute repayments
         return redirect('/deals/' . $deal->id);

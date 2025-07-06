@@ -33,6 +33,20 @@
         <p class="card-text">{{ $client->iddoc }} {{ $client->idnum }} </p>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-body">
+        @foreach($client->files as $index => $file)
+          <div class="document">
+              <a target="_blank" href="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
+                  {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
+                  <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}" class="col-sm-4"/>
+              </a>
+
+          </div>
+      @endforeach
+      </div>
+    </div>
     
     @can('admin')
     <x-abutton href="/clients/{{ $client->id }}/edit">Редактировать</x-abutton>  
@@ -59,22 +73,6 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        @foreach(json_decode($client->files, true) ?? [] as $index => $file)
-          <div class="document">
-              <a target="_blank" href="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
-                  {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
-                  <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}" class="col-sm-4"/>
-              </a>
-
-          </div>
-      @endforeach
-      </div>
-    </div>
-
-    
-    
     @can('admin')
     <x-abutton href="/deals/create">Добавить</x-abutton>  
     @endcan

@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="formFile" class="form-label">Загрузить документ</label>
+                    <label for="formFile" class="form-label">Добавить файл\картинку</label>
                     <input class="form-control" type="file" id="formFile" name="files[]" multiple>
                 </div>
 

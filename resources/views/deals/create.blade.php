@@ -9,7 +9,7 @@
             <div class="card-title d-flex justify-content-end">
                 <x-abutton href="/deals">Отмена</x-abutton>
             </div>
-            <form method="post" action="/deals">
+            <form method="post" action="/deals" enctype="multipart/form-data">
 @csrf
                 <div class="mb-3">
                     <label for="startprice" class="form-label">Клиент</label>
@@ -58,6 +58,10 @@
                     @error('term')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Загрузить документ</label>
+                    <input class="form-control" type="file" id="formFile" name="files[]" multiple>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Сохранить</button>

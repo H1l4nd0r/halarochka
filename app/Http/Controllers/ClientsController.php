@@ -63,8 +63,7 @@ class ClientsController extends Controller
                     'uploaded_at' => now()->toDateTimeString(),
                 ];
             }
-            $validated['files'] = \json_encode($fileData);
-            
+            $validated['files'] = json_encode($fileData); // Явное преобразование в JSON
             Client::create($validated);
             
             return redirect('/clients');
@@ -111,7 +110,7 @@ class ClientsController extends Controller
                 'uploaded_at' => now()->toDateTimeString(),
             ];
         }
-        $validated['files'] = \json_encode($fileData);
+        $validated['files'] = array_merge($client->files, $fileData);
 
         $client->update($validated);
         return redirect('/clients/' . $client->id);
@@ -122,6 +121,10 @@ class ClientsController extends Controller
      */
     public function destroy(Client $client)
     {
+        //
+    }
+
+    public function delpic(Client $client, $picId){
         //
     }
 }

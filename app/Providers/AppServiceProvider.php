@@ -26,10 +26,17 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading();
         //
         Gate::define('admin',function($user){
-            //print_r(session()->get('roles'));
 
-            //$adminRole = Role::where('name','=','admin')->first();
-            //return $user->roles()->where('role_id', $adminRole->id )->exists() ;
+            if(!session()->has('roles')){
+                //$adminRole = Role::where('name','=','admin')->first();
+                //$user->roles()->where('role_id', $adminRole->id )->exists() ;
+                // TODO combine with registration
+                $rolesData = Auth::user()->with('roles')->get()->toArray();
+                $roles = array_column($rolesData[0]['roles'], 'name');
+                request()->session()->put('roles', $roles);
+            }
+
+            
             return \array_search('admin',session()->get('roles')??[])!==false;
         });
 

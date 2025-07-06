@@ -12,13 +12,24 @@ class Deal extends Model
 
     protected $guarded = [];
 
-    public function getStatusTextAttribute()
-{
+    protected $attributes = [
+        'files' => []
+    ];
+
+    public function getFilesAttribute($value){
+        if (is_string($value)) {
+            return json_decode($value, true) ?? [];
+        }
+        return $value ?? [];
+    }
+
+    public function getStatusTextAttribute(){
         $statuses = [
             0 => 'Новый',
             1 => 'Не закрыт. Была оплат.',
             2 => 'Закрыт',
             3 => 'Просрочен',
+            4 => 'Реструктурирован'
             // Add more mappings as needed
         ];
         

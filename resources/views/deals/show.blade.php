@@ -83,6 +83,26 @@
             @endforeach
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex justify-content-between">
+              <h5 class="card-title">Документы</h5>
+            </div>
+            @foreach($deal->files as $index => $file)
+              <div class="document">
+                  <a target="_blank" href="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
+                      {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
+                      <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}" class="col-sm-4"/>
+                  </a>
+
+              </div>
+          @endforeach
+          </div>
+        </div>
+
+
+
       </div>  
     </div>
 

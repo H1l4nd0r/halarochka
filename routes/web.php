@@ -38,6 +38,7 @@ Route::post('/clients', [ClientsController::class, 'store'])->middleware('auth')
 Route::get('/clients/{client}', [ClientsController::class, 'show'])->middleware('auth');
 Route::get('/clients/{client}/edit', [ClientsController::class, 'edit'])->middleware('auth')->can('admin');
 Route::patch('/clients/{client}', [ClientsController::class, 'update'])->middleware('auth')->can('admin');
+Route::delete('/clients/{client}/delpic/{picId}', [ClientsController::class, 'delpic'])->middleware('auth')->can('admin');
 
 // DEALS
 Route::get('/deals',[ DealsController::class, 'index'])->middleware('auth');

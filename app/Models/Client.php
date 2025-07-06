@@ -10,19 +10,21 @@ class Client extends Model
     /** @use HasFactory<\Database\Factories\ClientFactory> */
     use HasFactory;
 
-    protected $casts = ['borndate' => 'datetime'];
-    protected $guarded = [];
-    protected $fillable = [
-        'first_name' ,
-        'middle_name' ,
-        'last_name' ,
-        'borndate' ,
-        'phone' ,
-        'email' ,
-        'iddoc' ,
-        'idnum' ,
-        'files'
+    protected $casts = [
+        'borndate' => 'datetime',
     ];
+    protected $attributes = [
+        'files' => []
+    ];
+    protected $guarded = [];
+
+    public function getFilesAttribute($value){
+        if (is_string($value)) {
+            return json_decode($value, true) ?? [];
+        }
+        return $value ?? [];
+    }
+
 
     public function deals(){
         return $this->hasMany(Deal::class);
