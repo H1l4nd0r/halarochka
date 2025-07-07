@@ -95,7 +95,11 @@
                       {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
                       <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}" class="col-sm-4"/>
                   </a>
-
+                <form action="/deals/{{$deal->id}}/delpic/{{ $index }}" method="POST">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-primary">Удвлить</button>
+                </form>
               </div>
           @endforeach
           </div>

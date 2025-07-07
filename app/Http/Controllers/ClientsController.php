@@ -126,5 +126,16 @@ class ClientsController extends Controller
 
     public function delpic(Client $client, $picId){
         //
+        $file = $client->files[$picId];
+
+        if(Storage::disk('public')->exists($file['path'])){
+            if (Storage::disk('public')->delete($file['path'])){
+                $cFiles = $client->files;
+                array_splice($cFiles, $picId, 1);
+                $client->update(['files' => $cFiles ]);
+            }
+        }
+        
+        return redirect()->back();
     }
 }

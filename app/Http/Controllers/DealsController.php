@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Payday;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class DealsController extends Controller
 {
@@ -163,5 +164,20 @@ class DealsController extends Controller
     public function destroy(Deal $deal)
     {
         //
+    }
+
+    public function delpic(Deal $deal, $picId){
+        //
+        $file = $deal->files[$picId];
+
+        if(Storage::disk('public')->exists($file['path'])){
+            if (Storage::disk('public')->delete($file['path'])){
+                $cFiles = $deal->files;
+                array_splice($cFiles, $picId, 1);
+                $deal->update(['files' => $cFiles ]);
+            }
+        }
+        
+        return redirect()->back();
     }
 }

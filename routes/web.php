@@ -48,6 +48,7 @@ Route::get('/deals/{deal}/pdf', [DealsController::class, 'pdf'])->middleware('au
 Route::get('/deals/{deal}', [DealsController::class, 'show'])->middleware('auth');
 Route::get('/deals/{deal}/edit', [DealsController::class, 'edit'])->middleware('auth')->can('admin');
 Route::patch('/deals/{deal}', [DealsController::class, 'update'])->middleware('auth')->can('admin');
+Route::delete('/deals/{deal}/delpic/{picId}', [DealsController::class, 'delpic'])->middleware('auth')->can('admin');
 
 // REPAYMENTS
 Route::get('/repayments',[ RepaymentsController::class, 'index'])->middleware('auth');
