@@ -52,7 +52,7 @@ class ClientsController extends Controller
 
             $fileData = [];
     
-            foreach (request()->file('files') as $file) {
+            foreach (request()->file('files')??[] as $file) {
                 $path = $file->store('uploads', 'public');
                 
                 $fileData[] = [
@@ -99,7 +99,7 @@ class ClientsController extends Controller
 
         $fileData = [];
     
-        foreach (request()->file('files') as $file) {
+        foreach (request()->file('files')??[] as $file) {
             $path = $file->store('uploads', 'public');
             
             $fileData[] = [

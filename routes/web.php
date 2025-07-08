@@ -7,6 +7,7 @@ use App\Http\Controllers\RepaymentsController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ReportsController;
 use App\Models\Client;
 use Illuminate\Support\Facades\Route;
 use App\Models\Deal;
@@ -27,7 +28,8 @@ Route::view('/', 'auth.login')->name('login');
 Route::get('/dashboard',[ PagesController::class, 'index'])->middleware('auth');
 
 // REPORTS
-Route::view('/reports', 'reports');
+Route::get('/reports/cashflow', [ ReportsController::class, 'cashFlowReport'])->middleware('auth');
+Route::get('/reports', [ ReportsController::class, 'index'])->middleware('auth');
 
 // RESOURCES
 

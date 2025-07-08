@@ -78,7 +78,7 @@ class DealsController extends Controller
 
             $fileData = [];
     
-            foreach (request()->file('files') as $file) {
+            foreach (request()->file('files')??[] as $file) {
                 $path = $file->store('uploads', 'public');
                 
                 $fileData[] = [
@@ -138,7 +138,7 @@ class DealsController extends Controller
 
         $fileData = [];
     
-        foreach (request()->file('files') as $file) {
+        foreach (request()->file('files')??[] as $file) {
             $path = $file->store('uploads', 'public');
             
             $fileData[] = [

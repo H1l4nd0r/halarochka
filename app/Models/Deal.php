@@ -26,7 +26,7 @@ class Deal extends Model
     public function getStatusTextAttribute(){
         $statuses = [
             0 => 'Новый',
-            1 => 'Не закрыт. Была оплат.',
+            1 => 'Активный',
             2 => 'Закрыт',
             3 => 'Просрочен',
             4 => 'Реструктурирован'
