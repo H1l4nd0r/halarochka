@@ -12,6 +12,10 @@ class Deal extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'dealdate' => 'datetime',
+    ];
+
     protected $attributes = [
         'files' => []
     ];

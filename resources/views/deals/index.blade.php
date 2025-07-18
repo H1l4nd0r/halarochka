@@ -28,7 +28,7 @@
     @foreach ($deals as $deal)
     <tr>
       <th scope="row">{{ $deal->id }}</th>
-      <td><a href="/deals/{{ $deal->id }}">{{ $deal->created_at }}</a></td>
+      <td><a href="/deals/{{ $deal->id }}">{{ $deal->dealdate }}</a></td>
       <td><a href="/clients/{{ $deal->client->id }}">{{ $deal->client->last_name }} {{ $deal->client->first_name }} {{ $deal->client->middle_name }}</a></td>
       <td>{{ $deal->startprice }}</td>
       <td>{{ $deal->firstpayment }}</td>

@@ -12,6 +12,10 @@ class Repayment extends Model
     
     protected $guarded = [];
 
+    protected $casts = [
+        'factday' => 'datetime',
+    ];
+
     public function deal(){
         return $this->belongsTo(Deal::class);
     }

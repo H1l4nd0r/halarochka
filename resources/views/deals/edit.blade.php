@@ -25,6 +25,14 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="dealdate" class="form-label">Дата заключения договора</label>
+                    <input type="date" class="form-control" id="dealdate" name="dealdate" required value="{{ optional($deal->dealdate)->format('Y-m-d')  }}">
+                    @error('dealdate')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label for="goodname" class="form-label">Описание сделки/товара</label>
                     <textarea class="form-control" id="goodname" rows="3" name="goodname">{{ $deal->goodname }}</textarea>
                     @error('goodname')

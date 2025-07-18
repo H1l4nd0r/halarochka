@@ -17,7 +17,7 @@ class DealsController extends Controller
     public function index()
     {
         return view('deals.index', [
-            'deals' => Deal::with('client')->orderBy('created_at','desc')->get()
+            'deals' => Deal::with('client')->orderBy('dealdate','desc')->get()
         ]);
     }
 
@@ -61,6 +61,7 @@ class DealsController extends Controller
     {
         try{
             $validated = request()->validate([
+                'dealdate' => ['required'],
                 'goodname' => ['required'],
                 'startprice' => ['required','min:5'],
                 'firstpayment' => ['required'],
@@ -98,7 +99,7 @@ class DealsController extends Controller
             for($i=0;$i<$deal->term;$i++){
                 Payday::create([
                     'deal_id' => $deal->id,
-                    'payday' => \Illuminate\Support\Carbon::now()->addMonths($i+1),
+                    'payday' => $deal->dealdate->addMonths($i+1),
                     'status' => 0,
                     'fullsumm' => $monthly,
                     'leftsumm' => $monthly
@@ -127,6 +128,7 @@ class DealsController extends Controller
     public function update(Deal $deal)
     {
         $validated = request()->validate([
+            'dealdate' => ['required'],
             'goodname' => ['required'],
             'startprice' => ['required','min:5'],
             'firstpayment' => ['required'],
