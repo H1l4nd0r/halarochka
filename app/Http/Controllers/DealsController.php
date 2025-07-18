@@ -96,15 +96,7 @@ class DealsController extends Controller
             
             $deal = Deal::create($validated);
 
-            for($i=0;$i<$deal->term;$i++){
-                Payday::create([
-                    'deal_id' => $deal->id,
-                    'payday' => $deal->dealdate->addMonths($i+1),
-                    'status' => 0,
-                    'fullsumm' => $monthly,
-                    'leftsumm' => $monthly
-                ]);
-            }
+            $this->reschedule($deal);
 
             return redirect('/deals');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -138,6 +130,10 @@ class DealsController extends Controller
         ]);
         $client = Client::find(request('client_id'));
 
+        $fullprice = request('startprice') + request('fee') - request('firstpayment');
+        $monthly = \ceil($fullprice/request('term'));
+        $fullprice = $monthly * request('term'); // to negotiate round fraction
+
         $fileData = [];
     
         foreach (request()->file('files')??[] as $file) {
@@ -151,10 +147,16 @@ class DealsController extends Controller
                 'uploaded_at' => now()->toDateTimeString(),
             ];
         }
+        $validated['fullprice'] = $fullprice;
         $validated['files'] = $validated['files'] = array_merge($deal->files, $fileData);
         $validated['client_id'] = $client->id;
 
+        
         $deal->update($validated);
+
+        if($deal->repayments()->count()<1){
+            $this->reschedule($deal);
+        }
 
         // TODO regenerate schedule and redistribute repayments
         return redirect('/deals/' . $deal->id);
@@ -181,5 +183,21 @@ class DealsController extends Controller
         }
         
         return redirect()->back();
+    }
+
+    private function reschedule(Deal $deal){
+        $deal->schedule()->delete();
+
+        $monthly = $deal->fullprice / $deal->term;
+
+        for($i=0;$i<$deal->term;$i++){
+            Payday::create([
+                'deal_id' => $deal->id,
+                'payday' => $deal->dealdate->addMonths($i+1),
+                'status' => 0,
+                'fullsumm' => $monthly,
+                'leftsumm' => $monthly
+            ]);
+        }
     }
 }
