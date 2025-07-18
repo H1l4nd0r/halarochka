@@ -72,7 +72,7 @@ class DealsController extends Controller
 
             $client = Client::find(request('client_id'));
 
-            $fullprice = request('startprice') + \ceil(request('startprice')*request('fee')/100);
+            $fullprice = request('startprice') + request('fee') - request('firstpayment');
             $monthly = \ceil($fullprice/request('term'));
             $fullprice = $monthly * request('term'); // to negotiate round fraction
 

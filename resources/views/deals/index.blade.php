@@ -17,9 +17,9 @@
       <th scope="col">№</th>
       <th scope="col">Дата договора</th>
       <th scope="col">Клиент</th>
-      <th scope="col">Цена товара</th>
-      <th scope="col">Взнос</th>
-      <th scope="col">Наценка</th>
+      <th scope="col">Цена товара (р.)</th>
+      <th scope="col">Взнос (р.)</th>
+      <th scope="col">Наценка (р.)</th>
       <th scope="col">Статус</th>
       <th scope="col">Товар</th>
     </tr>

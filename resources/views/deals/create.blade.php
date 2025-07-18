@@ -32,21 +32,21 @@
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="startprice" class="form-label">Начальная цена товара</label>
+                    <label for="startprice" class="form-label">Начальная цена товара (р.)</label>
                     <input type="number" class="form-control" id="startprice" name="startprice" value="{{ old('startprice') }}">
                     @error('startprice')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="firstpayment" class="form-label">Первоначальный взнос</label>
+                    <label for="firstpayment" class="form-label">Первоначальный взнос (р.)</label>
                     <input type="number" class="form-control" id="firstpayment" name="firstpayment" value="{{ old('firstpayment') }}">
                     @error('firstpayment')
                         <div class="text-danger">{{ $message }}</div>    
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="fee" class="form-label">Наценка</label>
+                    <label for="fee" class="form-label">Наценка  (р.)</label>
                     <input type="number" class="form-control" id="fee" name="fee" value="{{ old('fee') }}">
                     @error('fee')
                         <div class="text-danger">{{ $message }}</div>    

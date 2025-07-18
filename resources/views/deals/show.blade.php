@@ -28,9 +28,9 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Условия</h5>
-            <p class="card-text">Цена товара: {{ $deal->startprice }} </p>
-            <p class="card-text">Первый взнос: {{ $deal->firstpayment }} </p>
-            <p class="card-text">Наценка: {{ $deal->fee }}%</p>
+            <p class="card-text">Цена товара: {{ $deal->startprice }} (р.) </p>
+            <p class="card-text">Первый взнос: {{ $deal->firstpayment }} (р.) </p>
+            <p class="card-text">Наценка: {{ $deal->fee }} (р.)</p>
             <p class="card-text">Срок: {{ $deal->term }} мес </p>
             <p class="card-text">Полная стоимость рассрочки: {{ $deal->fullprice }} </p>
           </div>
@@ -45,8 +45,8 @@
             <h5 class="card-title">График платежей</h5>
             <div class="row">
               <div class="col-sm-3">Дата</div>
-              <div class="col-sm-3">Сумма платежа</div>
-              <div class="col-sm-3">Осталось</div>
+              <div class="col-sm-3">Сумма платежа (р.)</div>
+              <div class="col-sm-3">Осталось (р.)</div>
               <div class="col-sm-3">статус</div>
             </div>
             @foreach ($deal->schedule as $payday)
