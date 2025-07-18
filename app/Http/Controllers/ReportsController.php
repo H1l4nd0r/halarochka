@@ -16,18 +16,12 @@ class ReportsController extends Controller
     public function cashFlowReport(){
         $dealsData = Deal::select([
             'deals.status',
-            'deals.startprice',
-            'deals.fullprice',
-            'deals.firstpayment',
             DB::raw('SUM(paydays.fullsumm) as texpected'),
             DB::raw('SUM(paydays.leftsumm) as tleft')
         ])
         ->join('paydays', 'paydays.deal_id', '=', 'deals.id')
         ->groupBy([
             'deals.status',
-            'deals.startprice',
-            'deals.fullprice',
-            'deals.firstpayment'
         ])
         ->get();
 
