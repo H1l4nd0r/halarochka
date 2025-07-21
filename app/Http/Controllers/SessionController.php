@@ -23,8 +23,14 @@ class SessionController extends Controller
                 'email' => 'Неверный логин или пароль'
             ]);
         }
-
-        request()->session()->regenerate();
+    
+        // Полная регенерация сессии
+        request()->session()->invalidate();  // Удаляем старую сессию
+        request()->session()->regenerateToken(); // Новый CSRF-токен
+        
+        // Привязываем сессию к пользователю
+        session()->put('user_session_bind', Auth::id());
+        session()->save(); // Явное сохранение
         
         return redirect('/dashboard');
     }

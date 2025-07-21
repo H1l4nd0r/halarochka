@@ -36,6 +36,12 @@ class RegisteredUserController extends Controller
         }
 
         Auth::login($user);
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        
+        // Привязка сессии к пользователю
+        session()->put('user_session_bind', $user->id);
+        session()->save();
 
         return redirect('/dashboard');
     }
