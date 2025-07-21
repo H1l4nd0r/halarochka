@@ -38,8 +38,8 @@ class AppServiceProvider extends ServiceProvider
                 session()->save();
             }
 
-            print_r(session()->get('roles'));
-            echo 'CHECK:',\array_search('admin',session()->get('roles')??[])!==false;
+            //print_r(session()->get('roles'));
+            //echo 'CHECK:',\array_search('admin',session()->get('roles')??[])!==false;
             return \array_search('admin',session()->get('roles')??[])!==false;
         });
 
