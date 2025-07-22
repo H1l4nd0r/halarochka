@@ -29,6 +29,7 @@ Route::get('/dashboard',[ PagesController::class, 'index'])->middleware('auth');
 
 // REPORTS
 Route::get('/reports/cashflow', [ ReportsController::class, 'cashFlowReport'])->middleware('auth');
+Route::get('/reports/nextpaydays', [ ReportsController::class, 'nextPayDaysReport'])->middleware('auth');
 Route::get('/reports', [ ReportsController::class, 'index'])->middleware('auth');
 
 // RESOURCES
