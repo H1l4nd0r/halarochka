@@ -27,4 +27,8 @@ class ReportsController extends Controller
 
         return view('reports.cashflow', [ 'stats' => $dealsData ]);
     }
+
+    public function nextPayments(){
+        return view('reports.cashflow', [ 'stats' => []]);
+    }
 }

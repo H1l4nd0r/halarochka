@@ -51,7 +51,7 @@
             </div>
             @foreach ($deal->schedule as $payday)
             <div class="row">
-              <div class="col-sm-3">{{ $payday->payday }}</div>
+              <div class="col-sm-3">{{ $payday->payday->format('d-m-y') }}</div>
               <div class="col-sm-3">{{ $payday->fullsumm }}</div>
               <div class="col-sm-3">{{ $payday->leftsumm }}</div>
               <div class="col-sm-3">{{ $payday->status_text }}</div>

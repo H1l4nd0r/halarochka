@@ -11,6 +11,10 @@ class Payday extends Model
     use HasFactory;
     
     protected $guarded = [];
+
+    protected $casts = [
+        'payday' => 'datetime',
+    ];
     
     public function getStatusTextAttribute()
     {
