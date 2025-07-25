@@ -29,13 +29,13 @@
       <thead>
         <tr>
           <th scope="col">№</th>
-          <th scope="col">Дата договора</th>
-          <th scope="col">Клиент</th>
-          <th scope="col">Цена товара (р.)</th>
-          <th scope="col">Взнос (р.)</th>
-          <th scope="col">Наценка (р.)</th>
-          <th scope="col">Статус</th>
-          <th scope="col">Товар</th>
+          <th>Дата договора</th>
+          <th>Клиент</th>
+          <th class="text-end">Цена товара (р.)</th>
+          <th class="text-end">Взнос (р.)</th>
+          <th class="text-end">Наценка (р.)</th>
+          <th class="text-end">Статус</th>
+          <th>Товар</th>
         </tr>
       </thead>
       <tbody>
@@ -44,10 +44,10 @@
           <th scope="row">{{ $deal->id }}</th>
           <td><a href="/deals/{{ $deal->id }}">{{ $deal->dealdate->format('d-m-Y') }}</a></td>
           <td><a href="/clients/{{ $deal->client->id }}">{{ $deal->client->last_name }} {{ $deal->client->first_name }} {{ $deal->client->middle_name }}</a></td>
-          <td>{{ $deal->startprice }}</td>
-          <td>{{ $deal->firstpayment }}</td>
-          <td>{{ $deal->fee }}</td>
-          <td>{{ $deal->status_text }}</td>
+          <td class="text-end">{{ number_format($deal->startprice,0,'.',' ') }}</td>
+          <td class="text-end">{{ number_format($deal->firstpayment,0,'.',' ')  }}</td>
+          <td class="text-end">{{ number_format($deal->fee,0,'.',' ')  }}</td>
+          <td class="text-end">{{ $deal->status_text }}</td>
           <td>{{ $deal->goodname }}</td>
         </tr>
         @endforeach
@@ -55,8 +55,8 @@
           <th scope="row">Итого</th>
           <td></td>
           <td></td>
-          <td>{{ $totals['tdisbursed'] }}</td>
-          <td>{{ $totals['tfirstpayments'] }}</td>
+          <td class="text-end">{{ number_format($totals['tdisbursed'],0,'.',' ')  }}</td>
+          <td class="text-end">{{ number_format($totals['tfirstpayments'],0,'.',' ')  }}</td>
           <td></td>
           <td></td>
           <td></td>
