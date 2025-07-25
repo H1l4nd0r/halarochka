@@ -8,7 +8,6 @@
   <div class="card-body">
     <div class="card-title d-flex justify-content-between">
       <form action="/deals">Статус договора: 
-        @csrf
         @foreach([1 => 'Активные', 2 => 'Закрытые', 3 => 'Просроченые',
             4 => 'Реструктурированные'] as $value => $label)
             <div class="form-check form-check-inline">
