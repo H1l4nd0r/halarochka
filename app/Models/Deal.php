@@ -39,6 +39,10 @@ class Deal extends Model
         
         return $statuses[$this->status] ?? 'Unknown';
     }
+
+    public function scopeStatus($query, $status){
+        return $query->where('status', '=', $status);
+    }
     
     public function client(){
         return $this->belongsTo(Client::class);

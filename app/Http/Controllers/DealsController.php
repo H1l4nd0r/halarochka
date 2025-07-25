@@ -14,10 +14,20 @@ class DealsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $status = $request->input('status')?$request->input('status'):1;
+
+        $deals = Deal::with('client')
+            ->when($status, fn($q) => $q->status($status))
+            ->orderBy('dealdate','desc')->get();
+
+        $totals['tdisbursed'] = collect($deals)->sum('startprice');
+        $totals['tfirstpayments'] = collect($deals)->sum('startprice');
+
         return view('deals.index', [
-            'deals' => Deal::with('client')->orderBy('dealdate','desc')->get()
+            'deals' => $deals,
+            'totals' => $totals
         ]);
     }
 
@@ -92,7 +102,7 @@ class DealsController extends Controller
             }
             $validated['files'] = json_encode($fileData);
             $validated['fullprice'] = $fullprice;
-            $validated['status'] = 0;
+            $validated['status'] = 1;
             
             $deal = Deal::create($validated);
 
