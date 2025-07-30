@@ -6,7 +6,7 @@
     <title>{{ config('app.name','Abrafin') }}</title>
     @vite(['resources/sass/app.scss','resources/js/app.js'])
 </head>
-<body style="background: rgb(100 190 240) url('/images/abrafinbg.jpg') no-repeat top left; background-size: cover;">
+<body style="background: rgb(100 190 240) url('/images/abrafinbg.jpg') no-repeat top left; background-size: cover;min-height: 100vh;">
     <div id="app">
         <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark"  data-bs-theme="dark">
             <div class="container-fluid">
