@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name','Laravel') }}</title>
+    <title>{{ config('app.name','Abrafin') }}</title>
     @vite(['resources/sass/app.scss','resources/js/app.js'])
 </head>
 <body style="background: rgb(100 190 240) url('/images/abrafinbg.jpg') no-repeat top left; background-size: cover;">
