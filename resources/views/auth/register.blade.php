@@ -20,12 +20,12 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Пароль</label>
-                    <input type="text" class="form-control" id="password" name="password" required :value="old('password')">
+                    <input type="password" class="form-control" id="password" name="password" required :value="old('password')">
                     <x-form-error name="password"/>
                 </div>
                 <div class="mb-3">
                     <label for="password_confirmation" class="form-label">Пароль повторно</label>
-                    <input type="text" class="form-control" id="password_confirmation" name="password_confirmation" required :value="old('password_confirmation')">
+                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required :value="old('password_confirmation')">
                     <x-form-error name="password_confirmation"/>
                 </div>
                 
