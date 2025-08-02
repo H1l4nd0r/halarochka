@@ -23,7 +23,7 @@ class DealsController extends Controller
             ->orderBy('dealdate','desc')->get();
 
         $totals['tdisbursed'] = collect($deals)->sum('startprice');
-        $totals['tfirstpayments'] = collect($deals)->sum('startprice');
+        $totals['tfirstpayments'] = collect($deals)->sum('firstpayment');
 
         return view('deals.index', [
             'deals' => $deals,
