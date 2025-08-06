@@ -82,49 +82,59 @@ class DealsController extends Controller
                 'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
             ]);
 
-            $client = Client::find(request('client_id'));
+            if(request('source')=='invest' or request('startprice')<=Cashfund::availableFunds() ){
+                $client = Client::find(request('client_id'));
 
-            $fullprice = request('startprice') + request('fee') - request('firstpayment');
-            $monthly = \ceil($fullprice/request('term'));
-            $fullprice = $monthly * request('term'); // to negotiate round fraction
+                $fullprice = request('startprice') + request('fee') - request('firstpayment');
+                $monthly = \ceil($fullprice/request('term'));
+                $fullprice = $monthly * request('term'); // to negotiate round fraction
 
-            $fileData = [];
-    
-            foreach (request()->file('files')??[] as $file) {
-                $path = $file->store('uploads', 'public');
+                $fileData = [];
+        
+                foreach (request()->file('files')??[] as $file) {
+                    $path = $file->store('uploads', 'public');
+                    
+                    $fileData[] = [
+                        'path' => str_replace('public/', '', $path),
+                        'name' => $file->getClientOriginalName(),
+                        'type' => $file->getClientMimeType(),
+                        'size' => $file->getSize(),
+                        'uploaded_at' => now()->toDateTimeString(),
+                    ];
+                }
+                $validated['files'] = json_encode($fileData);
+                $validated['fullprice'] = $fullprice;
+                $validated['status'] = 1;
                 
-                $fileData[] = [
-                    'path' => str_replace('public/', '', $path),
-                    'name' => $file->getClientOriginalName(),
-                    'type' => $file->getClientMimeType(),
-                    'size' => $file->getSize(),
-                    'uploaded_at' => now()->toDateTimeString(),
-                ];
+                $deal = Deal::create($validated);
+
+                // add cashfund records
+                // disbursement
+                // TODO check cash availability
+                if(request('source')=='invest'){
+                    Cashfund::create([
+                        'deal_id' => $deal->id,
+                        'summ' => $deal->startprice,
+                        'type' => Cashfund::CASHFUND_INVESTMENT,
+                        'factday' => request('dealdate')
+                    ]);    
+                }
+                
+                Cashfund::create([
+                    'deal_id' => $deal->id,
+                    'summ' => -1*$deal->startprice,
+                    'type' => Cashfund::CASHFUND_DISBURSEMENT,
+                    'factday' => request('dealdate')
+                ]);
+                // firstpayment
+                Cashfund::create([
+                    'deal_id' => $deal->id,
+                    'summ' => $deal->firstpayment,
+                    'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
+                    'factday' => request('dealdate')
+                ]);                
+                $this->reschedule($deal);
             }
-            $validated['files'] = json_encode($fileData);
-            $validated['fullprice'] = $fullprice;
-            $validated['status'] = 1;
-            
-            $deal = Deal::create($validated);
-
-            // add cashfund records
-            // disbursement
-            // TODO check cash availability
-            Cashfund::create([
-                'deal_id' => $deal->id,
-                'summ' => -1*$deal->startprice,
-                'type' => Cashfund::CASHFUND_DISBURSEMENT,
-                'factday' => request('dealdate')
-            ]);
-            // firstpayment
-            Cashfund::create([
-                'deal_id' => $deal->id,
-                'summ' => $deal->firstpayment,
-                'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
-                'factday' => request('dealdate')
-            ]);
-
-            $this->reschedule($deal);
 
             return redirect('/deals');
         } catch (\Illuminate\Validation\ValidationException $e) {

@@ -42,4 +42,8 @@ class Cashfund extends Model
     public function deal(){
         return $this->belongsTo(Deal::class);
     }
+
+    public static function availableFunds(){
+        return self::sum('summ');
+    }
 }

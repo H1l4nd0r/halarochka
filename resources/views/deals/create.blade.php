@@ -12,6 +12,16 @@
             <form method="post" action="/deals" enctype="multipart/form-data">
 @csrf
                 <div class="mb-3">
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="source" id="radioDefault1" value="invest" checked>
+                    <label class="form-check-label" for="radioDefault1">Инвестиция</label>
+                    </div>
+                        <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="source" id="radioDefault2" value="funds">
+                    <label class="form-check-label" for="radioDefault2">Из кассы</label>
+                    </div>
+                </div>
+                <div class="mb-3">
                     <label for="startprice" class="form-label">Клиент</label>
                     <select class="form-select" aria-label="Default select example" name="client_id">
                         <option {{ old('user_id')!=null?'':'selected' }}>...</option>
