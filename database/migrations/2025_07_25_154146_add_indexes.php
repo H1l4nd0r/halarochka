@@ -14,12 +14,12 @@ return new class extends Migration
         //
         Schema::table('users', function (Blueprint $table) {
             // Добавить обычный индекс
-            $table->unique('id');
+            if (!Schema::hasIndex('users', 'users_id_unique')) $table->unique('id');
         });
 
         Schema::table('roles', function (Blueprint $table) {
             // Добавить обычный индекс
-            $table->unique('id');
+            if (!Schema::hasIndex('roles', 'roles_id_unique')) $table->unique('id');
             $table->index('name');
         });
 

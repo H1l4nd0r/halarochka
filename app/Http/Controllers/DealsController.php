@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Deal;
 use App\Models\Client;
 use App\Models\Payday;
+use App\Models\Cashfund;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
@@ -106,6 +107,23 @@ class DealsController extends Controller
             
             $deal = Deal::create($validated);
 
+            // add cashfund records
+            // disbursement
+            // TODO check cash availability
+            Cashfund::create([
+                'deal_id' => $deal->id,
+                'summ' => -1*$deal->startprice,
+                'type' => Cashfund::CASHFUND_DISBURSEMENT,
+                'factday' => request('dealdate')
+            ]);
+            // firstpayment
+            Cashfund::create([
+                'deal_id' => $deal->id,
+                'summ' => $deal->firstpayment,
+                'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
+                'factday' => request('dealdate')
+            ]);
+
             $this->reschedule($deal);
 
             return redirect('/deals');
@@ -129,46 +147,50 @@ class DealsController extends Controller
      */
     public function update(Deal $deal)
     {
-        $validated = request()->validate([
-            'dealdate' => ['required'],
-            'goodname' => ['required'],
-            'startprice' => ['required','min:5'],
-            'firstpayment' => ['required'],
-            'term' => ['required'],
-            'client_id' => ['required'],
-            'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
-        ]);
-        $client = Client::find(request('client_id'));
-
-        $fullprice = request('startprice') + request('fee') - request('firstpayment');
-        $monthly = \ceil($fullprice/request('term'));
-        $fullprice = $monthly * request('term'); // to negotiate round fraction
-
-        $fileData = [];
-    
-        foreach (request()->file('files')??[] as $file) {
-            $path = $file->store('uploads', 'public');
-            
-            $fileData[] = [
-                'path' => str_replace('public/', '', $path),
-                'name' => $file->getClientOriginalName(),
-                'type' => $file->getClientMimeType(),
-                'size' => $file->getSize(),
-                'uploaded_at' => now()->toDateTimeString(),
-            ];
-        }
-        $validated['fullprice'] = $fullprice;
-        $validated['files'] = $validated['files'] = array_merge($deal->files, $fileData);
-        $validated['client_id'] = $client->id;
-
-        
-        $deal->update($validated);
-
+        // allow only if there are no repayments yet
         if($deal->repayments()->count()<1){
+
+            $validated = request()->validate([
+                'dealdate' => ['required'],
+                'goodname' => ['required'],
+                'startprice' => ['required','min:5'],
+                'firstpayment' => ['required'],
+                'term' => ['required'],
+                'client_id' => ['required'],
+                'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
+            ]);
+            $client = Client::find(request('client_id'));
+
+            $fullprice = request('startprice') + request('fee') - request('firstpayment');
+            $monthly = \ceil($fullprice/request('term'));
+            $fullprice = $monthly * request('term'); // to negotiate round fraction
+
+            $fileData = [];
+        
+            foreach (request()->file('files')??[] as $file) {
+                $path = $file->store('uploads', 'public');
+                
+                $fileData[] = [
+                    'path' => str_replace('public/', '', $path),
+                    'name' => $file->getClientOriginalName(),
+                    'type' => $file->getClientMimeType(),
+                    'size' => $file->getSize(),
+                    'uploaded_at' => now()->toDateTimeString(),
+                ];
+            }
+            $validated['fullprice'] = $fullprice;
+            $validated['files'] = $validated['files'] = array_merge($deal->files, $fileData);
+            $validated['client_id'] = $client->id;
+
+            
+            $deal->update($validated);
+            // TODO fix cashfund records
+
             $this->reschedule($deal);
+        }else{
+            // TODO propose deal restructure
         }
 
-        // TODO regenerate schedule and redistribute repayments
         return redirect('/deals/' . $deal->id);
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Repayment;
 use App\Models\Deal;
 use Illuminate\Http\Request;
+use App\Models\Cashfund;
 
 class RepaymentsController extends Controller
 {
@@ -43,7 +44,6 @@ class RepaymentsController extends Controller
                 'deal_id' => ['required'],
             ]);
 
-            // TODO separate repayment distribution to reuse in deal edit action
             $paidsumm = request('summ');
             $deal = Deal::find(request('deal_id'));
             $rep = $deal->repayments()->create([
@@ -51,6 +51,14 @@ class RepaymentsController extends Controller
                 'summ' => $paidsumm,
                 'deal_id' => request('deal_id'),
                 'status' => 1, // TODO status model
+            ]);
+
+            // add cashfund record
+            Cashfund::create([
+                'repayment_id' => $rep->id,
+                'summ' => $paidsumm,
+                'type' => Cashfund::CASHFUND_REPAYMENT,
+                'factday' => request('factday')
             ]);
 
             // process schedule

@@ -8,10 +8,8 @@ use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ReportsController;
-use App\Models\Client;
+use App\Http\Controllers\CashfundController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Deal;
-use App\Models\Repayment;
 
 
 // Auth
@@ -71,3 +69,10 @@ Route::get('/paydays/{payday}/edit', [PaydaysController::class, 'edit'])->middle
 Route::patch('/paydays/{payday}', [PaydaysController::class, 'update'])->middleware('auth')->can('admin');
 
 
+// CASHFUND
+Route::get('/cash',[ CashfundController::class, 'index'])->middleware('auth');
+Route::get('/cash/create', [CashfundController::class, 'create'])->middleware('auth');
+Route::post('/cash', [CashfundController::class, 'store'])->middleware('auth')->can('admin');
+Route::get('/cash/{cash}', [CashfundController::class, 'show'])->middleware('auth');
+Route::get('/cash/{cash}/edit', [CashfundController::class, 'edit'])->middleware('auth')->can('admin');
+Route::patch('/cash/{cash}', [CashfundController::class, 'update'])->middleware('auth')->can('admin');
