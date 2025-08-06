@@ -17,7 +17,7 @@ return new class extends Migration
         foreach($deals as $deal){
             DB::table('cashfunds')->insert([
                 'deal_id' => $deal->id,
-                'factday' => now(),
+                'factday' => $deal->dealdate,
                 'type' => Cashfund::CASHFUND_INVESTMENT,
                 'summ' => $deal->startprice,
                 'created_at' => now(),
@@ -25,7 +25,7 @@ return new class extends Migration
             ]);
             DB::table('cashfunds')->insert([
                 'deal_id' => $deal->id,
-                'factday' => now(),
+                'factday' => $deal->dealdate,
                 'type' => Cashfund::CASHFUND_DISBURSEMENT,
                 'summ' => -1*$deal->startprice,
                 'created_at' => now(),
@@ -33,7 +33,7 @@ return new class extends Migration
             ]);
             DB::table('cashfunds')->insert([
                 'deal_id' => $deal->id,
-                'factday' => now(),
+                'factday' => $deal->dealdate,
                 'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
                 'summ' => $deal->firstpayment,
                 'created_at' => now(),
