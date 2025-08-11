@@ -7,6 +7,8 @@
   
   <div class="card-body">
     <div class="card-title">
+      Инвестиции {{ $investments }}
+      Доступно {{ $available }}
        @can('admin')
       <x-abutton href="/cash/create">Добавить инвестицию</x-abutton>
       @endcan

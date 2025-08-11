@@ -31,6 +31,10 @@ class Cashfund extends Model
         ];
     }
 
+    public function scopeType($query, $type){
+        return $query->where('type', '=', $type);
+    }
+
     public function getTypeTextAttribute(){        
         return self::getTypes()[$this->type] ?? 'Нераспознанный платеж';
     }
@@ -45,5 +49,34 @@ class Cashfund extends Model
 
     public static function availableFunds(){
         return self::sum('summ');
+    }
+
+    public static function getTotals(){
+        $totalsData = Cashfund::selectRaw('type, SUM(summ) as total_sum')
+            ->groupBy('type')
+            ->get();
+        $totals = [
+            self::CASHFUND_INVESTMENT => 0,
+            self::CASHFUND_FIRSTPAYMENT => 0,
+            self::CASHFUND_REPAYMENT => 0,
+            self::CASHFUND_DISBURSEMENT => 0,
+        ];
+        foreach($totalsData as $subtotal){
+            switch($subtotal->type){
+                case self::CASHFUND_INVESTMENT:
+                    $totals[self::CASHFUND_INVESTMENT] = $subtotal->total_sum;
+                    break;
+                case self::CASHFUND_FIRSTPAYMENT:
+                    $totals[self::CASHFUND_FIRSTPAYMENT] = $subtotal->total_sum;
+                    break;
+                case self::CASHFUND_REPAYMENT:
+                    $totals[self::CASHFUND_REPAYMENT] = $subtotal->total_sum;
+                    break;
+                case self::CASHFUND_DISBURSEMENT:
+                    $totals[self::CASHFUND_DISBURSEMENT] = $subtotal->total_sum;
+                    break;
+            }
+        }
+        return $totals;
     }
 }

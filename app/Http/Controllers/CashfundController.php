@@ -13,8 +13,11 @@ class CashfundController extends Controller
      */
     public function index()
     {
+        $totals = Cashfund::getTotals();
         return view('cashfund.index', [
-            'funds' => Cashfund::with(['deal','repayment'])->latest()->get()
+            'funds' => Cashfund::with(['deal','repayment'])->latest()->get(),
+            'investments' => $totals[Cashfund::CASHFUND_INVESTMENT],
+            'available' => $totals[Cashfund::CASHFUND_INVESTMENT] + $totals[Cashfund::CASHFUND_FIRSTPAYMENT] + $totals[Cashfund::CASHFUND_REPAYMENT] + $totals[Cashfund::CASHFUND_DISBURSEMENT],
         ]);        
     }
 
