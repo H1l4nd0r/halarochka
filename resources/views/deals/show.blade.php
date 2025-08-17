@@ -19,7 +19,7 @@
             <h5 class="card-title">Покупатель, товар</h5>
             <p class="card-text">Клиент: {{ $deal->client->last_name }} {{ $deal->client->first_name }} {{ $deal->client->middle_name }}</p>
             <p class="card-text">Товар: {{ $deal->goodname }} </p>
-            <p class="card-text">Договор: {{ $deal->id }} от {{ $deal->dealdate }} </p>
+            <p class="card-text">Договор: {{ $deal->id }} от {{ $deal->dealdate->format('d-m-Y') }} </p>
             <p class="card-text">Статус: {{ $deal->status_text }}</p>
           </div>
         </div>
