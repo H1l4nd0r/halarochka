@@ -82,7 +82,7 @@ class DealsController extends Controller
                 'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
             ]);
 
-            if(request('source')=='invest' or request('startprice')<=Cashfund::availableFunds() ){
+            if( request('startprice')<=Cashfund::availableFunds() ){
                 $client = Client::find(request('client_id'));
 
                 $fullprice = request('startprice') + request('fee') - request('firstpayment');
@@ -110,15 +110,6 @@ class DealsController extends Controller
 
                 // add cashfund records
                 // disbursement
-                // TODO check cash availability
-                if(request('source')=='invest'){
-                    Cashfund::create([
-                        'deal_id' => $deal->id,
-                        'summ' => $deal->startprice,
-                        'type' => Cashfund::CASHFUND_INVESTMENT,
-                        'factday' => request('dealdate')
-                    ]);    
-                }
                 
                 Cashfund::create([
                     'deal_id' => $deal->id,
