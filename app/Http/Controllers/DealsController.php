@@ -165,6 +165,7 @@ class DealsController extends Controller
                 'goodname' => ['required'],
                 'startprice' => ['required','min:5'],
                 'firstpayment' => ['required'],
+                'fee' => ['required'],
                 'term' => ['required'],
                 'client_id' => ['required'],
                 'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
