@@ -85,7 +85,7 @@ class DealsController extends Controller
                 'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
             ]);
 
-            if( request('startprice')<=Cashfund::availableFunds() ){
+            if( ( request('startprice') - request('firstpayment') ) <=Cashfund::availableFunds() ){
                 $client = Client::find(request('client_id'));
 
                 $fullprice = request('startprice') + request('fee') - request('firstpayment');
