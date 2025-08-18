@@ -26,9 +26,12 @@ class DealsController extends Controller
         $totals['tdisbursed'] = collect($deals)->sum('startprice');
         $totals['tfirstpayments'] = collect($deals)->sum('firstpayment');
 
+        $cash = Cashfund::getTotals();
+
         return view('deals.index', [
             'deals' => $deals,
-            'totals' => $totals
+            'totals' => $totals,
+            'available' => $cash[Cashfund::CASHFUND_INVESTMENT] + $cash[Cashfund::CASHFUND_FIRSTPAYMENT] + $cash[Cashfund::CASHFUND_REPAYMENT] + $cash[Cashfund::CASHFUND_DISBURSEMENT],
         ]);
     }
 

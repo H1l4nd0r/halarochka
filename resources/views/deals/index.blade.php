@@ -11,8 +11,8 @@
         @foreach([1 => 'Активные', 2 => 'Закрытые', 3 => 'Просроченые',
             4 => 'Реструктурированные'] as $value => $label)
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="status" id="radioDefault2" value="{{ $value }}" onclick="this.form.submit();" {{ request('status', 1) == $value ? 'checked' : '' }}>
-              <label class="form-check-label" for="radioDefault2">
+              <input class="form-check-input" type="radio" name="status" id="radioDefault{{ $value }}" value="{{ $value }}" onclick="this.form.submit();" {{ request('status', 1) == $value ? 'checked' : '' }}>
+              <label class="form-check-label" for="radioDefault{{ $value }}">
                 {{ $label }}
               </label>
             </div>
@@ -20,6 +20,7 @@
         
 
       </form>
+      <span class="btn text-bg-warning p-2">В кассе {{ number_format($available,0,'.',' ') }}</span>
       @can('admin')
         <x-abutton href="/deals/create">Добавить договор</x-abutton>
       @endcan

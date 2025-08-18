@@ -23,7 +23,7 @@
                         <x-nav-link href="/clients" :active="request()->is('clients')">Клиенты</x-nav-link>
                         <x-nav-link href="/repayments" :active="request()->is('repayments')">Поступления</x-nav-link>
                         <x-nav-link href="/reports" :active="request()->is('reports')">Отчеты</x-nav-link>
-                        <x-nav-link href="/cash" :active="request()->is('cash')">Финансы</x-nav-link>
+                        <x-nav-link href="/cash" :active="request()->is('cash')">Касса</x-nav-link>
                         <x-nav-link href="#">&nbsp;</x-nav-link>
                         <x-nav-link href="#" :active="false">Hello {{ Auth::user()->name }}</x-nav-link>
                     </ul>
