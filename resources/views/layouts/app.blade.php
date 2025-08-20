@@ -19,8 +19,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <x-nav-link href="/dashboard" :active="request()->is('/dashboard')">Дашборд</x-nav-link>
-                        <x-nav-link href="/deals" :active="request()->is('/deals')">Договоры</x-nav-link>
                         <x-nav-link href="/clients" :active="request()->is('clients')">Клиенты</x-nav-link>
+                        <x-nav-link href="/applications" :active="request()->is('/applications')">Заявки</x-nav-link>
+                        <x-nav-link href="/deals" :active="request()->is('/deals')">Договоры</x-nav-link>
                         <x-nav-link href="/repayments" :active="request()->is('repayments')">Поступления</x-nav-link>
                         <x-nav-link href="/reports" :active="request()->is('reports')">Отчеты</x-nav-link>
                         <x-nav-link href="/cash" :active="request()->is('cash')">Касса</x-nav-link>

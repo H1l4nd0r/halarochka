@@ -41,7 +41,7 @@ Route::patch('/clients/{client}', [ClientsController::class, 'update'])->middlew
 Route::delete('/clients/{client}/delpic/{picId}', [ClientsController::class, 'delpic'])->middleware('auth')->can('admin');
 
 // DEALS
-Route::post('/deals/apply', [DealsController::class, 'apply']);
+//Route::post('/deals/apply', [DealsController::class, 'apply']);
 Route::get('/deals',[ DealsController::class, 'index'])->middleware('auth');
 Route::get('/deals/create', [DealsController::class, 'create'])->middleware('auth');
 Route::post('/deals', [DealsController::class, 'store'])->middleware('auth')->can('admin');

@@ -10,27 +10,21 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 
-class DealsController extends Controller
+class ApplicationsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $status = $request->input('status')?$request->input('status'):1;
-
         $deals = Deal::with('client')
-            ->when($status, fn($q) => $q->status($status))
+            ->where('status', 0)
             ->orderBy('dealdate','desc')->get();
-
-        $totals['tdisbursed'] = collect($deals)->sum('startprice');
-        $totals['tfirstpayments'] = collect($deals)->sum('firstpayment');
 
         $cash = Cashfund::getTotals();
 
-        return view('deals.index', [
+        return view('applications.index', [
             'deals' => $deals,
-            'totals' => $totals,
             'available' => $cash[Cashfund::CASHFUND_INVESTMENT] + $cash[Cashfund::CASHFUND_FIRSTPAYMENT] + $cash[Cashfund::CASHFUND_REPAYMENT] + $cash[Cashfund::CASHFUND_DISBURSEMENT],
         ]);
     }
@@ -39,33 +33,16 @@ class DealsController extends Controller
      * Create a new instance.
      */
     public function create(){
-        return view('deals.create',[
-            'clients' => Client::orderBy('last_name', 'asc')->get()
-        ]);
+        // 
     }
 
     /**
      * Display the specified resource.
      */
     public function show(Deal $deal){
-        return view('deals.show', [
+        return view('applications.show', [
             'deal' => $deal,
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function pdf(Deal $deal){
-        $pdf = Pdf::loadView('deals.schedulepdf', [
-            'deal' => $deal,
-        ])->setOption([
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'isPhpEnabled' => true,
-        ]);
-
-        return $pdf->download('Dogovor' . $deal->id . '.pdf');
     }
 
     /**
@@ -74,6 +51,20 @@ class DealsController extends Controller
     public function store()
     {
         try{
+
+// Validate the request
+        $validatedData = request()->validate([
+            'productName' => 'required|string|max:255',
+            'storeName' => 'required|string|max:255',
+            'fullName' => 'required|string|max:255',
+            'phoneNumber' => 'required|string|max:20',
+        ]);
+
+        // Process the installment request
+        // For now, we'll just return a success message
+        return response()->json(['message' => 'Заявка успешно отправлена!']);
+
+
             $validated = request()->validate([
                 'dealdate' => ['required'],
                 'goodname' => ['required'],
@@ -127,10 +118,10 @@ class DealsController extends Controller
                     'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
                     'factday' => request('dealdate')
                 ]);                
-                $this->reschedule($deal);
+
             }
 
-            return redirect('/deals');
+            return redirect('/applications');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
@@ -140,7 +131,7 @@ class DealsController extends Controller
      */
     public function edit(Deal $deal)
     {
-        return view('deals.edit', [
+        return view('applications.edit', [
             'deal' => $deal ,
             'clients' => Client::orderBy('last_name', 'asc')->get()
         ]);
@@ -171,7 +162,6 @@ class DealsController extends Controller
             $fullprice = $monthly * request('term'); // to negotiate round fraction
 
             // TODO take out adding files
-            // TODO remove previousely added cashfund records
             $fileData = [];
         
             foreach (request()->file('files')??[] as $file) {
@@ -193,12 +183,12 @@ class DealsController extends Controller
             $deal->update($validated);
             // TODO fix cashfund records
 
-            $this->reschedule($deal);
+
         }else{
             // TODO propose deal restructure
         }
 
-        return redirect('/deals/' . $deal->id);
+        return redirect('/applications/' . $deal->id);
     }
 
     /**
@@ -239,19 +229,4 @@ class DealsController extends Controller
         return redirect()->back();
     }
 
-    private function reschedule(Deal $deal){
-        $deal->schedule()->delete();
-
-        $monthly = $deal->fullprice / $deal->term;
-
-        for($i=0;$i<$deal->term;$i++){
-            Payday::create([
-                'deal_id' => $deal->id,
-                'payday' => $deal->dealdate->addMonths($i+1),
-                'status' => 0,
-                'fullsumm' => $monthly,
-                'leftsumm' => $monthly
-            ]);
-        }
-    }
 }
