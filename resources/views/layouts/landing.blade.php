@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Финансовые решения - Главная</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Общие стили */
         body {
@@ -283,9 +281,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Bootstrap 5 JS и зависимости -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
         // Функция для обновления значений при движении ползунков
@@ -436,6 +431,7 @@ function calculate() {
 </div>
 
 <script>
+
     document.getElementById('installmentForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
