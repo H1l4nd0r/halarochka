@@ -144,7 +144,7 @@
     <section class="hero-section">
         <div class="container hero-content">
             <h1>Финансовые решения для вашего комфорта</h1>
-            <p>Мы предлагаем выгодные условия кредитования и инвестирования. Наши специалисты помогут подобрать оптимальное решение для ваших целей.</p>
+            <p>Мы предлагаем выгодные условия рассрочки. Наши специалисты помогут подобрать оптимальное решение для ваших целей.</p>
         </div>
     </section>
 
@@ -212,7 +212,7 @@
         </div>
     </section>
 
-    <!-- 4. Блок с контактами и картой -->
+    <!-- 4. Блок с контактами и картой 
     <section class="contact-section bg-light">
         <div class="container">
             <h2 class="text-center mb-5" id="contacts">Наши контакты</h2>
@@ -247,7 +247,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>-->
 
     <!-- Футер -->
     <footer class="bg-dark text-white py-4">
@@ -257,15 +257,7 @@
                     <h5>Финансовые решения</h5>
                     <p>Мы помогаем реализовать ваши финансовые цели с 2010 года.</p>
                 </div>
-                <div class="col-md-3">
-                    <h5>Меню</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">Главная</a></li>
-                        <li><a href="#" class="text-white">Кредиты</a></li>
-                        <li><a href="#" class="text-white">Инвестиции</a></li>
-                        <li><a href="#" class="text-white">Контакты</a></li>
-                    </ul>
-                </div>
+
                 <div class="col-md-3">
                     <h5>Контакты</h5>
                     <address class="text-white">
