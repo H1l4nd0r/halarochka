@@ -11,17 +11,16 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\CashfundController;
 use Illuminate\Support\Facades\Route;
 
-
 // Auth
 Route::get('/register', [RegisteredUserController::class, 'create']);
 Route::post('/register', [RegisteredUserController::class, 'store']);
 
-Route::get('/login', [SessionController::class, 'create']);
+Route::get('/login', [SessionController::class, 'create'])->name('login');
 Route::post('/login', [SessionController::class, 'store']);
 Route::post('/logout', [SessionController::class, 'destroy']);
 
 // DASH
-Route::view('/', 'auth.login')->name('login');
+Route::view('/', 'layouts.landing');
 
 Route::get('/dashboard',[ PagesController::class, 'index'])->middleware('auth');
 
@@ -42,6 +41,7 @@ Route::patch('/clients/{client}', [ClientsController::class, 'update'])->middlew
 Route::delete('/clients/{client}/delpic/{picId}', [ClientsController::class, 'delpic'])->middleware('auth')->can('admin');
 
 // DEALS
+Route::post('/deals/apply', [DealsController::class, 'apply']);
 Route::get('/deals',[ DealsController::class, 'index'])->middleware('auth');
 Route::get('/deals/create', [DealsController::class, 'create'])->middleware('auth');
 Route::post('/deals', [DealsController::class, 'store'])->middleware('auth')->can('admin');

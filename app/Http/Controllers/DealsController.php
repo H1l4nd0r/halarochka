@@ -170,6 +170,7 @@ class DealsController extends Controller
             $monthly = \ceil($fullprice/request('term'));
             $fullprice = $monthly * request('term'); // to negotiate round fraction
 
+            // TODO take out adding files
             $fileData = [];
         
             foreach (request()->file('files')??[] as $file) {
@@ -205,6 +206,21 @@ class DealsController extends Controller
     public function destroy(Deal $deal)
     {
         //
+    }
+
+    public function apply(Request $request)
+    {
+        // Validate the request
+        $validatedData = $request->validate([
+            'productName' => 'required|string|max:255',
+            'storeName' => 'required|string|max:255',
+            'fullName' => 'required|string|max:255',
+            'phoneNumber' => 'required|string|max:20',
+        ]);
+
+        // Process the installment request
+        // For now, we'll just return a success message
+        return response()->json(['message' => 'Заявка успешно отправлена!']);
     }
 
     public function delpic(Deal $deal, $picId){
