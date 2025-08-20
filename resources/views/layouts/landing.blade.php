@@ -175,9 +175,9 @@
                                 <div class="mb-4">
                                     <label for="guarantors" class="form-label">Поручители:</label>
                                     <div class="btn-group" role="group">
-                                        <input type="radio" class="btn-check" name="guarantors" id="guarantor1" autocomplete="off" onclick="setGuarantors(1)">
+                                        <input type="radio" class="btn-check" name="guarantors" id="guarantor1" autocomplete="off" onclick="setGuarantors(1)" checked value="0.045" oninput="calculate();">
                                         <label class="btn btn-outline-primary" for="guarantor1">1</label>
-                                        <input type="radio" class="btn-check" name="guarantors" id="guarantor2" autocomplete="off" onclick="setGuarantors(2)">
+                                        <input type="radio" class="btn-check" name="guarantors" id="guarantor2" autocomplete="off" onclick="setGuarantors(2)" value="0.04" oninput="calculate();">
                                         <label class="btn btn-outline-primary" for="guarantor2">2</label>
                                     </div>
                                 </div>
@@ -322,7 +322,8 @@ function calculate() {
     const productPrice = parseInt(document.getElementById('productPrice').value);
     const initialPayment = parseInt(document.getElementById('initialPayment').value);
     const loanTerm = parseInt(document.getElementById('loanTerm').value);
-    const monthlyRate = 0.04; // 4% в месяц
+    const monthlyRate = document.querySelector('input[name="guarantors"]:checked').value; // 4.5% или 4%
+    //alert(monthlyRate);
 
     // Сумма кредита
     const loanAmount = productPrice - initialPayment;
