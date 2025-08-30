@@ -1,0 +1,93 @@
+@extends('layouts.app')
+@section('content')
+
+<div class="container mt-3">
+
+    <div class="card">
+
+        <div class="card-body">
+            <div class="card-title d-flex justify-content-end">
+                <x-abutton href="/applications">Отмена</x-abutton>
+            </div>
+            <form method="post" action="/applications/{{ $deal->id }}" enctype="multipart/form-data">
+@csrf
+@method('PATCH')
+                <div class="mb-3">
+                    <label for="startprice" class="form-label">Клиент</label>
+                    <select class="form-select" aria-label="Default select example" name="client_id">
+                        @foreach ($clients as $client)
+                            <option value="{{ $client->id }}" {{ $deal->client_id == $client->id?'selected':'' }} >{{ $client->id }}&nbsp;{{ $client->last_name }}&nbsp;{{ $client->first_name }}&nbsp;{{ $client->first_name }}&nbsp;{{ $client->phone }}</option> 
+                        @endforeach
+                    </select>
+                    @error('client_id')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="dealdate" class="form-label">Дата заключения договора</label>
+                    <input type="date" class="form-control" id="dealdate" name="dealdate" required value="{{ optional($deal->dealdate)->format('Y-m-d')  }}">
+                    @error('dealdate')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="goodname" class="form-label">Описание сделки/товара</label>
+                    <textarea class="form-control" id="goodname" rows="3" name="goodname">{{ $deal->goodname }}</textarea>
+                    @error('goodname')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="startprice" class="form-label">Начальная цена товара (р.)</label>
+                    <input type="number" class="form-control" id="startprice" name="startprice" value="{{ $deal->startprice }}">
+                    @error('startprice')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="firstpayment" class="form-label">Первоначальный взнос (р.)</label>
+                    <input type="number" class="form-control" id="firstpayment" name="firstpayment" value="{{ $deal->firstpayment }}">
+                    @error('firstpayment')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Наценка (р.)</label>
+                    <input type="number" class="form-control" id="fee" name="fee" value="{{ $deal->fee }}">
+                    @error('fee')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="term" class="form-label">Срок (мес)</label>
+                    <input type="number" class="form-control" id="term" name="term" value="{{ $deal->term }}">
+                    @error('term')
+                        <div class="text-danger">{{ $message }}</div>    
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Загрузить документ</label>
+                    <input class="form-control" type="file" id="formFile" name="files[]" multiple>
+                </div>
+
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Активировать</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="activate" id="radioDefault1" value="1" >
+                        <label class="form-check-label" for="radioDefault1">Да</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="activate" id="radioDefault0" value="0" checked>
+                        <label class="form-check-label" for="radioDefault0">Нет</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+
+
+        </div>
+
+@endsection

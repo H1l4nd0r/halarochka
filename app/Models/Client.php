@@ -12,9 +12,10 @@ class Client extends Model
 
     protected $casts = [
         'borndate' => 'datetime',
+        'files' => 'array'
     ];
     protected $attributes = [
-        'files' => []
+        'files' => '[]'
     ];
     protected $guarded = [];
 

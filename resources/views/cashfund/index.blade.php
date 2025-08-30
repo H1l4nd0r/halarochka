@@ -31,8 +31,8 @@
     <tr>
       <th scope="row">{{ $rep->id }}</th>
       <td>{{ $rep->summ }}</td>
-      <td>{{ $rep->factday }}</td>
-      <td>{{ $rep->created_at }}</td>
+      <td>{{ $rep->factday->format('d-m-Y') }}</td>
+      <td>{{ $rep->created_at->format('d-m-Y') }}</td>
       <td>{{ $rep->type_text }}</td>
       <td>{{ $rep->description }}</td>
     </tr>

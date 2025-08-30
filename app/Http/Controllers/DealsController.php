@@ -86,7 +86,6 @@ class DealsController extends Controller
             ]);
 
             if( ( request('startprice') - request('firstpayment') ) <=Cashfund::availableFunds() ){
-                $client = Client::find(request('client_id'));
 
                 $fullprice = request('startprice') + request('fee') - request('firstpayment');
                 $monthly = \ceil($fullprice/request('term'));
@@ -109,25 +108,8 @@ class DealsController extends Controller
                 $validated['fullprice'] = $fullprice;
                 $validated['status'] = 1;
                 
-                $deal = Deal::create($validated);
+                Deal::create($validated);
 
-                // add cashfund records
-                // disbursement
-                
-                Cashfund::create([
-                    'deal_id' => $deal->id,
-                    'summ' => -1*$deal->startprice,
-                    'type' => Cashfund::CASHFUND_DISBURSEMENT,
-                    'factday' => request('dealdate')
-                ]);
-                // firstpayment
-                Cashfund::create([
-                    'deal_id' => $deal->id,
-                    'summ' => $deal->firstpayment,
-                    'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
-                    'factday' => request('dealdate')
-                ]);                
-                $this->reschedule($deal);
             }
 
             return redirect('/deals');
@@ -191,9 +173,7 @@ class DealsController extends Controller
 
             
             $deal->update($validated);
-            // TODO fix cashfund records
 
-            $this->reschedule($deal);
         }else{
             // TODO propose deal restructure
         }
@@ -207,21 +187,6 @@ class DealsController extends Controller
     public function destroy(Deal $deal)
     {
         //
-    }
-
-    public function apply(Request $request)
-    {
-        // Validate the request
-        $validatedData = $request->validate([
-            'productName' => 'required|string|max:255',
-            'storeName' => 'required|string|max:255',
-            'fullName' => 'required|string|max:255',
-            'phoneNumber' => 'required|string|max:20',
-        ]);
-
-        // Process the installment request
-        // For now, we'll just return a success message
-        return response()->json(['message' => 'Заявка успешно отправлена!']);
     }
 
     public function delpic(Deal $deal, $picId){
@@ -239,19 +204,4 @@ class DealsController extends Controller
         return redirect()->back();
     }
 
-    private function reschedule(Deal $deal){
-        $deal->schedule()->delete();
-
-        $monthly = $deal->fullprice / $deal->term;
-
-        for($i=0;$i<$deal->term;$i++){
-            Payday::create([
-                'deal_id' => $deal->id,
-                'payday' => $deal->dealdate->addMonths($i+1),
-                'status' => 0,
-                'fullsumm' => $monthly,
-                'leftsumm' => $monthly
-            ]);
-        }
-    }
 }

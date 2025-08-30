@@ -17,8 +17,15 @@ class Deal extends Model
     ];
 
     protected $attributes = [
-        'files' => []
+        'files' => '[]'
     ];
+
+    const DEAL_NEW = 0;
+    const DEAL_ACTIVE = 1;
+    const DEAL_CLOSED = 2;
+    const DEAL_OVERDUE = 3;
+    const DEAL_RESTRUCTURED = 3;
+
 
     public function getFilesAttribute($value){
         if (is_string($value)) {
@@ -29,11 +36,11 @@ class Deal extends Model
 
     public function getStatusTextAttribute(){
         $statuses = [
-            0 => 'Новый',
-            1 => 'Активный',
-            2 => 'Закрыт',
-            3 => 'Просрочен',
-            4 => 'Реструктурирован'
+            self::DEAL_NEW => 'Новый',
+            self::DEAL_ACTIVE => 'Активный',
+            self::DEAL_CLOSED => 'Закрыт',
+            self::DEAL_OVERDUE => 'Просрочен',
+            self::DEAL_RESTRUCTURED => 'Реструктурирован'
             // Add more mappings as needed
         ];
         
@@ -54,5 +61,85 @@ class Deal extends Model
 
     public function repayments(){
         return $this->hasMany(Repayment::class);
+    }
+
+    public function cashfunds(){
+        return $this->hasMany(Cashfund::class);
+    }
+
+    // TODO make private and selfrescheduling
+    private function reschedule(){
+        $this->schedule()->delete();
+        $this->cashfunds()->delete();
+
+        // add cashfund records
+        // disbursement
+        
+        Cashfund::create([
+            'deal_id' => $this->id,
+            'summ' => -1*$this->startprice,
+            'type' => Cashfund::CASHFUND_DISBURSEMENT,
+            'factday' => request('dealdate')
+        ]);
+        // firstpayment
+        Cashfund::create([
+            'deal_id' => $this->id,
+            'summ' => $this->firstpayment,
+            'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
+            'factday' => request('dealdate')
+        ]);                
+
+        $monthly = $this->fullprice / $this->term;
+
+        for($i=0;$i<$this->term;$i++){
+            Payday::create([
+                'deal_id' => $this->id,
+                'payday' => $this->dealdate->addMonths($i+1),
+                'status' => 0,
+                'fullsumm' => $monthly,
+                'leftsumm' => $monthly
+            ]);
+        }
+    }
+
+    protected static function booted(){
+        static::updating(function ($deal) {
+            // if updating active deal            
+            if ( $deal->status == self::DEAL_ACTIVE  && $deal->repayments()->count() > 0 ) {
+                throw new \Exception('Нельзя менять договор с привязанными оплатами.');
+            }
+
+            // activating deal from application
+            if ( $deal->getOriginal('status') == self::DEAL_NEW 
+                && $deal->status == self::DEAL_ACTIVE  
+                && $deal->startprice - $deal->firstpayment > Cashfund::availableFunds()) {
+
+                throw new \Exception('В кассе недостаточно средств.');
+            }
+        });
+
+        static::creating(function ($deal) {
+            // put your check here
+            if ( $deal->status == self::DEAL_ACTIVE && ( $deal->startprice - $deal->firstpayment ) > Cashfund::availableFunds() ) {
+                throw new \Exception('В кассе недостаточно средств.');
+            }
+        });
+        
+        // reschedule when activating deal
+        static::updated(function ($deal) {
+            // put your check here
+            if ( $deal->getOriginal('status') == self::DEAL_NEW && $deal->status == self::DEAL_ACTIVE) {
+                $deal->reschedule();
+            }
+        });
+
+        // reschedule when created active deal
+        static::created(function ($deal) {
+            // put your check here
+            if ( $deal->status == self::DEAL_ACTIVE) {
+                $deal->reschedule();
+            }
+        });
+
     }
 }

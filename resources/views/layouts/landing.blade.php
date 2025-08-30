@@ -391,8 +391,24 @@ function calculate() {
                         <input type="text" class="form-control" id="storeName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="fullName" class="form-label">ФИО</label>
-                        <input type="text" class="form-control" id="fullName" required>
+                        <label for="last_name" class="form-label">Фамилия</label>
+                        <input type="text" class="form-control" id="last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">Имя</label>
+                        <input type="text" class="form-control" id="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="middle_name" class="form-label">Отчество</label>
+                        <input type="text" class="form-control" id="middle_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="borndate" class="form-label">Дата рождения</label>
+                        <input type="date" class="form-control" id="borndate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idnum" class="form-label">Номер паспорта</label>
+                        <input type="text" class="form-control" id="idnum" required>
                     </div>
                     <div class="mb-3">
                         <label for="phoneNumber" class="form-label">Телефон</label>
@@ -429,15 +445,22 @@ function calculate() {
         event.preventDefault();
 
         const formData = {
-            productName: document.getElementById('productName').value,
-            storeName: document.getElementById('storeName').value,
-            fullName: document.getElementById('fullName').value,
-            phoneNumber: document.getElementById('phoneNumber').value
+            goodname: document.getElementById('productName').value + ' ' + document.getElementById('storeName').value,
+            first_name: document.getElementById('first_name').value,
+            last_name: document.getElementById('last_name').value,
+            middle_name: document.getElementById('middle_name').value,
+            borndate: document.getElementById('borndate').value,
+            phone: document.getElementById('phoneNumber').value,
+            idnum: document.getElementById('idnum').value,
+            startprice: document.getElementById('productPrice').value,
+            firstpayment: document.getElementById('initialPayment').value,
+            term: document.getElementById('loanTerm').value,
+            monthlyFee: document.querySelector('input[name="guarantors"]:checked').value
         };
 
         // Call the service
-        let result = 'Попробуйте отправить еще раз чуть позже.';
-        fetch('/deals/apply', {
+        let result = 'Не удалось отправить данные.';
+        fetch('/applications', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

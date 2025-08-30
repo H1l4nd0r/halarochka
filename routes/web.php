@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\DealsController;
+use App\Http\Controllers\ApplicationsController;
 use App\Http\Controllers\PaydaysController;
 use App\Http\Controllers\RepaymentsController;
 use App\Http\Controllers\RegisteredUserController;
@@ -40,8 +41,16 @@ Route::get('/clients/{client}/edit', [ClientsController::class, 'edit'])->middle
 Route::patch('/clients/{client}', [ClientsController::class, 'update'])->middleware('auth')->can('admin');
 Route::delete('/clients/{client}/delpic/{picId}', [ClientsController::class, 'delpic'])->middleware('auth')->can('admin');
 
+// APPLICATIONS
+Route::get('/applications',[ ApplicationsController::class, 'index'])->middleware('auth');
+Route::get('/applications/create', [ApplicationsController::class, 'create'])->middleware('auth');
+Route::post('/applications', [ApplicationsController::class, 'store']);
+Route::get('/applications/{deal}', [ApplicationsController::class, 'show'])->middleware('auth');
+Route::get('/applications/{deal}/edit', [ApplicationsController::class, 'edit'])->middleware('auth')->can('admin');
+Route::patch('/applications/{deal}', [ApplicationsController::class, 'update'])->middleware('auth')->can('admin');
+Route::delete('/applications/{deal}/delpic/{picId}', [ApplicationsController::class, 'delpic'])->middleware('auth')->can('admin');
+
 // DEALS
-//Route::post('/deals/apply', [DealsController::class, 'apply']);
 Route::get('/deals',[ DealsController::class, 'index'])->middleware('auth');
 Route::get('/deals/create', [DealsController::class, 'create'])->middleware('auth');
 Route::post('/deals', [DealsController::class, 'store'])->middleware('auth')->can('admin');

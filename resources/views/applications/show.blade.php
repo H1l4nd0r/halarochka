@@ -8,8 +8,7 @@
   <div class="card-body">
     <div class="card-title d-flex justify-content-between">
       <h5></h5>
-      <x-abutton href="/deals/{{$deal->id}}/pdf">Скачать в PDF</x-abutton>
-      <x-abutton href="/deals">Закрыть</x-abutton>
+      <x-abutton href="/applications">Закрыть</x-abutton>
     </div>
 
     <div class="row">
@@ -39,51 +38,8 @@
     </div>
 
     <div class="row">
+      
       <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">График платежей</h5>
-            <div class="row">
-              <div class="col-sm-3">Дата</div>
-              <div class="col-sm-3">Сумма платежа (р.)</div>
-              <div class="col-sm-3">Осталось (р.)</div>
-              <div class="col-sm-3">статус</div>
-            </div>
-            @foreach ($deal->schedule as $payday)
-            <div class="row">
-              <div class="col-sm-3">{{ $payday->payday->format('d-m-Y') }}</div>
-              <div class="col-sm-3">{{ $payday->fullsumm }}</div>
-              <div class="col-sm-3">{{ $payday->leftsumm }}</div>
-              <div class="col-sm-3">{{ $payday->status_text }}</div>
-            </div>
-              
-            @endforeach
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            
-            <div class="card-title d-flex justify-content-between">
-              <h5 class="card-title">Платежи</h5>
-              @can('admin')
-              <x-abutton href="/repayments/create?deal_id={{ $deal->id }}">Добавить</x-abutton>
-              @endcan
-            </div>
-            <div class="row">
-              <div class="col-sm-3">Дата</div>
-              <div class="col-sm-3">Сумма платежа</div>
-            </div>
-            @foreach ($deal->repayments as $payment)
-            <div class="row">
-              <div class="col-sm-3">{{ $payment->factday }} </div>
-              <div class="col-sm-3">{{ $payment->summ }}</div>
-            </div>
-            @endforeach
-          </div>
-        </div>
-
         <div class="card">
           <div class="card-body">
             <div class="card-title d-flex justify-content-between">
@@ -95,7 +51,7 @@
                       {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
                       <img src="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}" class="col-sm-4"/>
                   </a>
-                <form action="/deals/{{$deal->id}}/delpic/{{ $index }}" method="POST">
+                <form action="/applications/{{$deal->id}}/delpic/{{ $index }}" method="POST">
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="btn btn-primary">Удвлить</button>
@@ -111,7 +67,7 @@
     </div>
 
      @can('admin')
-    <x-abutton href="/deals/{{ $deal->id }}/edit">Редактировать</x-abutton>
+    <x-abutton href="/applications/{{ $deal->id }}/edit">Редактировать</x-abutton>
     @endcan
   </div>
 

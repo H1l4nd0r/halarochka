@@ -26,9 +26,9 @@
     @foreach ($repayments as $rep)
     <tr>
       <th scope="row">{{ $rep->id }}</th>
-      <td><a href="/deals/{{ $rep->deal->id }}">№ {{ $rep->deal->id }} от {{ $rep->deal->created_at }}</a></td>
-      <td>{{ $rep->created_at }}</td>
-      <td>{{ $rep->factday }}</td>
+      <td><a href="/deals/{{ $rep->deal->id }}">№ {{ $rep->deal->id }} от {{ $rep->deal->dealdate->format('d-m-Y') }}</a></td>
+      <td>{{ $rep->created_at->format('d-m-Y') }}</td>
+      <td>{{ $rep->factday->format('d-m-Y') }}</td>
       <td>{{ $rep->summ }}</td>
     </tr>
     @endforeach

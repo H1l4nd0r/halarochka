@@ -7,7 +7,6 @@ use App\Models\Client;
 use App\Models\Payday;
 use App\Models\Cashfund;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicationsController extends Controller
@@ -52,76 +51,44 @@ class ApplicationsController extends Controller
     {
         try{
 
-// Validate the request
-        $validatedData = request()->validate([
-            'productName' => 'required|string|max:255',
-            'storeName' => 'required|string|max:255',
-            'fullName' => 'required|string|max:255',
-            'phoneNumber' => 'required|string|max:20',
-        ]);
-
-        // Process the installment request
-        // For now, we'll just return a success message
-        return response()->json(['message' => 'Заявка успешно отправлена!']);
-
-
-            $validated = request()->validate([
-                'dealdate' => ['required'],
-                'goodname' => ['required'],
-                'startprice' => ['required','min:5'],
-                'firstpayment' => ['required'],
-                'fee' => ['required'],
-                'term' => ['required'],
-                'client_id' => ['required'],
-                'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
+            // Validate the request
+            $validatedClient = request()->validate([
+                'first_name' => ['required'],
+                'middle_name' => ['required'],
+                'last_name' => ['required'],
+                'borndate' => ['required','date'],
+                'phone' => ['required','regex:/^\+7\d{10}/i'],
+                'idnum' => ['required','min:10']
             ]);
 
-            if( ( request('startprice') - request('firstpayment') ) <=Cashfund::availableFunds() ){
-                $client = Client::find(request('client_id'));
-
-                $fullprice = request('startprice') + request('fee') - request('firstpayment');
-                $monthly = \ceil($fullprice/request('term'));
-                $fullprice = $monthly * request('term'); // to negotiate round fraction
-
-                $fileData = [];
-        
-                foreach (request()->file('files')??[] as $file) {
-                    $path = $file->store('uploads', 'public');
-                    
-                    $fileData[] = [
-                        'path' => str_replace('public/', '', $path),
-                        'name' => $file->getClientOriginalName(),
-                        'type' => $file->getClientMimeType(),
-                        'size' => $file->getSize(),
-                        'uploaded_at' => now()->toDateTimeString(),
-                    ];
-                }
-                $validated['files'] = json_encode($fileData);
-                $validated['fullprice'] = $fullprice;
-                $validated['status'] = 1;
+            $client = Client::where('idnum', request('idnum'))->first();
+            // Check if client was found
+            if (!$client) {
+                // Client not found, create
                 
-                $deal = Deal::create($validated);
-
-                // add cashfund records
-                // disbursement
-                
-                Cashfund::create([
-                    'deal_id' => $deal->id,
-                    'summ' => -1*$deal->startprice,
-                    'type' => Cashfund::CASHFUND_DISBURSEMENT,
-                    'factday' => request('dealdate')
-                ]);
-                // firstpayment
-                Cashfund::create([
-                    'deal_id' => $deal->id,
-                    'summ' => $deal->firstpayment,
-                    'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
-                    'factday' => request('dealdate')
-                ]);                
-
+                $client = Client::create($validatedClient);
             }
 
-            return redirect('/applications');
+            if($client){
+                $validatedAppl = request()->validate([
+                    'goodname' => 'required|string|max:255',
+                    'startprice' => 'required|int',
+                    'firstpayment' => 'required|int',
+                    'term' => ['required','int','min:1'],
+                ]);
+
+                $validatedAppl['fee'] = ($validatedAppl['startprice'] - $validatedAppl['firstpayment']) * $validatedAppl['term'] * request('monthlyFee');
+                $validatedAppl['fullprice'] = $validatedAppl['startprice'] - $validatedAppl['firstpayment'] + $validatedAppl['fee'];
+                $validatedAppl['dealdate'] = now();
+                $validatedAppl['client_id'] = $client->id;
+                $validatedAppl['status'] = 0;
+                $deal = Deal::create($validatedAppl);
+
+                return response()->json(['message' => 'Заявка успешно отправлена! Номер заявки: №' . $deal->id . ' от ' . $deal->dealdate]);
+            }else{
+                return response()->json(['message' => 'Не удалось создать заявку, попробуйте позже']);
+            }
+            
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
@@ -140,52 +107,47 @@ class ApplicationsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Deal $deal)
-    {
-        // allow only if there are no repayments yet
-        if($deal->repayments()->count()<1){
+    public function update(Deal $deal){
 
-            $validated = request()->validate([
-                'dealdate' => ['required'],
-                'goodname' => ['required'],
-                'startprice' => ['required','min:5'],
-                'firstpayment' => ['required'],
-                'fee' => ['required'],
-                'term' => ['required'],
-                'client_id' => ['required'],
-                'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
-            ]);
-            $client = Client::find(request('client_id'));
+        $validated = request()->validate([
+            'dealdate' => ['required'],
+            'goodname' => ['required'],
+            'startprice' => ['required','min:5'],
+            'firstpayment' => ['required'],
+            'fee' => ['required'],
+            'term' => ['required'],
+            'client_id' => ['required'],
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
+        ]);
+        $client = Client::find(request('client_id'));
 
-            $fullprice = request('startprice') + request('fee') - request('firstpayment');
-            $monthly = \ceil($fullprice/request('term'));
-            $fullprice = $monthly * request('term'); // to negotiate round fraction
+        $fullprice = request('startprice') + request('fee') - request('firstpayment');
+        $monthly = \ceil($fullprice/request('term'));
+        $fullprice = $monthly * request('term'); // to negotiate round fraction
 
-            // TODO take out adding files
-            $fileData = [];
-        
-            foreach (request()->file('files')??[] as $file) {
-                $path = $file->store('uploads', 'public');
-                
-                $fileData[] = [
-                    'path' => str_replace('public/', '', $path),
-                    'name' => $file->getClientOriginalName(),
-                    'type' => $file->getClientMimeType(),
-                    'size' => $file->getSize(),
-                    'uploaded_at' => now()->toDateTimeString(),
-                ];
-            }
-            $validated['fullprice'] = $fullprice;
-            $validated['files'] = $validated['files'] = array_merge($deal->files, $fileData);
-            $validated['client_id'] = $client->id;
-
+        // TODO take out adding files
+        $fileData = [];
+    
+        foreach (request()->file('files')??[] as $file) {
+            $path = $file->store('uploads', 'public');
             
-            $deal->update($validated);
-            // TODO fix cashfund records
+            $fileData[] = [
+                'path' => str_replace('public/', '', $path),
+                'name' => $file->getClientOriginalName(),
+                'type' => $file->getClientMimeType(),
+                'size' => $file->getSize(),
+                'uploaded_at' => now()->toDateTimeString(),
+            ];
+        }
+        $validated['fullprice'] = $fullprice;
+        $validated['files'] = $validated['files'] = array_merge($deal->files, $fileData);
+        $validated['client_id'] = $client->id;
+        $validated['status'] = request('activate') ?? 0;
+        
+        $deal->update($validated);
 
-
-        }else{
-            // TODO propose deal restructure
+        if($validated['status']==1) {
+            return redirect('/deals/' . $deal->id);
         }
 
         return redirect('/applications/' . $deal->id);
@@ -197,21 +159,6 @@ class ApplicationsController extends Controller
     public function destroy(Deal $deal)
     {
         //
-    }
-
-    public function apply(Request $request)
-    {
-        // Validate the request
-        $validatedData = $request->validate([
-            'productName' => 'required|string|max:255',
-            'storeName' => 'required|string|max:255',
-            'fullName' => 'required|string|max:255',
-            'phoneNumber' => 'required|string|max:20',
-        ]);
-
-        // Process the installment request
-        // For now, we'll just return a success message
-        return response()->json(['message' => 'Заявка успешно отправлена!']);
     }
 
     public function delpic(Deal $deal, $picId){
