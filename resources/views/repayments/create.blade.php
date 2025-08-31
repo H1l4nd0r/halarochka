@@ -25,7 +25,7 @@
                         <select class="form-select" aria-label="Default select example" name="deal_id">
                             <option selected>...</option>
                             @foreach ($deals as $deal)
-                                <option value="{{ $deal->id }}">{{ $deal->id }}&nbsp;{{ $deal->created_at }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->phone }}</option> 
+                                <option value="{{ $deal->id }}">{{ $deal->id }}&nbsp;{{ $deal->created_at }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->phone }}&nbsp;{{ $deal->goodname }}&nbsp;{{ $deal->startprice }}</option> 
                             @endforeach
                         </select>
                         @error('client_id')
