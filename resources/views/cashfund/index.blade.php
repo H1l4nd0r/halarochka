@@ -6,7 +6,21 @@
 <div class="card">
   
   <div class="card-body">
-    <div class="card-title">
+    <div class="card-title d-flex justify-content-between">
+      <form action="/cash">Тип: 
+        @foreach($types as $value => $label)
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="type" id="radioDefault{{ $value }}" value="{{ $value }}" onclick="this.form.submit();" {{ request('type', '0')  === (string)$value ? 'checked' : '' }}>
+              <label class="form-check-label" for="radioDefault{{ $value }}">
+                {{ $label }}
+              </label>
+            </div>
+        @endforeach
+        
+
+      </form>
+
+
       <span class="btn text-bg-warning p-2">Инвестиции {{ number_format($investments,0,'.',' ')  }}</span>
       @can('admin')
       <x-abutton href="/cash/create">Добавить инвестицию</x-abutton>

@@ -11,11 +11,15 @@ class CashfundController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $type = $request->input('type');
         $totals = Cashfund::getTotals();
         return view('cashfund.index', [
-            'funds' => Cashfund::with(['deal','repayment'])->latest()->get(),
+            'funds' => Cashfund::with(['deal','repayment'])
+            ->type((int)$type) // всегда применяем фильтр
+            ->latest()->get(),
+            'types' => Cashfund::getTypes(),
             'investments' => $totals[Cashfund::CASHFUND_INVESTMENT],
             'available' => $totals[Cashfund::CASHFUND_INVESTMENT] + $totals[Cashfund::CASHFUND_FIRSTPAYMENT] + $totals[Cashfund::CASHFUND_REPAYMENT] + $totals[Cashfund::CASHFUND_DISBURSEMENT],
         ]);        

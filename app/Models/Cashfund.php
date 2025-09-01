@@ -30,6 +30,13 @@ class Cashfund extends Model
             // Add more mappings as needed
         ];
     }
+    
+    /**
+     * Получить название типа по значению
+     */
+    public function getTypeNameAttribute(): string{
+        return self::getTypes()[$this->type] ?? 'Неизвестно';
+    }
 
     public function scopeType($query, $type){
         return $query->where('type', '=', $type);
