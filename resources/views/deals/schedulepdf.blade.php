@@ -47,7 +47,7 @@
                         <tr> 
                         @foreach ($deal->schedule as $payday)
                             <tr>
-                                <td>{{ $payday->payday }}</td>
+                                <td>{{ $payday->payday->format('d-m-Y') }}</td>
                                 <td>{{ $payday->fullsumm }}</td>
                                 <td>{{ $payday->leftsumm }}</td>
                                 <td>{{ $payday->status_text }}</td>
@@ -62,7 +62,7 @@
                         <tr> 
                         @foreach ($deal->repayments as $payment)
                             <tr>
-                                <td>{{ $payment->factday }}</td>
+                                <td>{{ $payment->factday->format('d-m-Y') }}</td>
                                 <td>{{ $payment->summ }}</td>
                             <tr> 
                         @endforeach
