@@ -16,7 +16,7 @@
     @vite(['resources/sass/app.scss','resources/js/app.js'])
 </head>
 <body>
-    {{ dd(\Dompdf\Dompdf::getOptions()->getDefaultFont()); }}
+
     <div id="app">
 
         <div class="container mt-3">

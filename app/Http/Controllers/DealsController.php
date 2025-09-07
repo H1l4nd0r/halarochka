@@ -9,6 +9,7 @@ use App\Models\Cashfund;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Dompdf\Dompdf;
 
 class DealsController extends Controller
 {
@@ -66,7 +67,12 @@ class DealsController extends Controller
             'default_font' => 'DejaVu Sans'
         ]);
 
-        return $pdf->download('Dogovor' . $deal->id . '.pdf');
+        $dompdf = new Dompdf();
+$fontFamilies = $dompdf->getFontMetrics()->getFontFamilies();
+
+dd($fontFamilies);
+
+        //return $pdf->download('Dogovor' . $deal->id . '.pdf');
     }
 
     /**
