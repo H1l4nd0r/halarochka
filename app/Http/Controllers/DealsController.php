@@ -67,12 +67,7 @@ class DealsController extends Controller
             'default_font' => 'DejaVu Sans'
         ]);
 
-        $dompdf = new Dompdf();
-$fontFamilies = $dompdf->getFontMetrics()->getFontFamilies();
-
-dd($fontFamilies);
-
-        //return $pdf->download('Dogovor' . $deal->id . '.pdf');
+        return $pdf->download('Dogovor' . $deal->id . '.pdf');
     }
 
     /**

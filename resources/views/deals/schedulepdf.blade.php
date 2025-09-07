@@ -6,11 +6,11 @@
     <title>{{ config('app.name','Abrafin.ru График платежей') }}</title>
     <style>
          * {
-            font-family: DejaVu Sans, sans-serif !important;
+            font-family: "dejavu sans", sans-serif !important;
         }
 
         body, table, td, th, p, div, span {
-            font-family: DejaVu Sans, sans-serif !important;
+            font-family: "dejavu sans", sans-serif !important;
         }
     </style>
     @vite(['resources/sass/app.scss','resources/js/app.js'])
