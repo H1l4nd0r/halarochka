@@ -16,6 +16,7 @@
     @vite(['resources/sass/app.scss','resources/js/app.js'])
 </head>
 <body>
+    {{ $pdf->getOptions() }}
     <div id="app">
 
         <div class="container mt-3">
