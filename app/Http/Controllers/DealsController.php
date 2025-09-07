@@ -63,6 +63,7 @@ class DealsController extends Controller
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
             'isPhpEnabled' => true,
+            'default_font' => 'DejaVu Sans'
         ]);
 
         return $pdf->download('Dogovor' . $deal->id . '.pdf');

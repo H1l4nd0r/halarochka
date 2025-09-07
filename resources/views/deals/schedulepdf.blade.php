@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name','Abrafin.ru График платежей') }}</title>
     <style>
-        body {
-            font-family: DejaVu Sans, sans-serif;
+         * {
+            font-family: DejaVu Sans, sans-serif !important;
+        }
+
+        body, table, td, th, p, div, span {
+            font-family: DejaVu Sans, sans-serif !important;
         }
     </style>
     @vite(['resources/sass/app.scss','resources/js/app.js'])
