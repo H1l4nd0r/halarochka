@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Deal extends Model
 {
@@ -14,10 +15,11 @@ class Deal extends Model
 
     protected $casts = [
         'dealdate' => 'datetime',
+        'files' => 'array'
     ];
 
     protected $attributes = [
-        'files' => '[]'
+        'files' => null
     ];
 
     const DEAL_NEW = 0;
@@ -79,14 +81,16 @@ class Deal extends Model
             'deal_id' => $this->id,
             'summ' => -1*$this->startprice,
             'type' => Cashfund::CASHFUND_DISBURSEMENT,
-            'factday' => request('dealdate')
+            'factday' => request('dealdate'),
+            'user_id' => Auth::id()
         ]);
         // firstpayment
         Cashfund::create([
             'deal_id' => $this->id,
             'summ' => $this->firstpayment,
             'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
-            'factday' => request('dealdate')
+            'factday' => request('dealdate'),
+            'user_id' => Auth::id()
         ]);                
 
         $monthly = $this->fullprice / $this->term;
@@ -97,7 +101,8 @@ class Deal extends Model
                 'payday' => $this->dealdate->addMonths($i+1),
                 'status' => 0,
                 'fullsumm' => $monthly,
-                'leftsumm' => $monthly
+                'leftsumm' => $monthly,
+                'user_id' => Auth::id()
             ]);
         }
     }

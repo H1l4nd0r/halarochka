@@ -6,6 +6,7 @@ use App\Models\Repayment;
 use App\Models\Deal;
 use Illuminate\Http\Request;
 use App\Models\Cashfund;
+use Illuminate\Support\Facades\Auth;
 
 class RepaymentsController extends Controller
 {
@@ -51,6 +52,7 @@ class RepaymentsController extends Controller
                 'summ' => $paidsumm,
                 'deal_id' => request('deal_id'),
                 'status' => 1, // TODO status model
+                'user_id' => Auth::id()
             ]);
 
             // add cashfund record
@@ -58,7 +60,8 @@ class RepaymentsController extends Controller
                 'repayment_id' => $rep->id,
                 'summ' => $paidsumm,
                 'type' => Cashfund::CASHFUND_REPAYMENT,
-                'factday' => request('factday')
+                'factday' => request('factday'),
+                'user_id' => Auth::id()
             ]);
 
             // process schedule

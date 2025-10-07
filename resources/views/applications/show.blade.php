@@ -66,7 +66,7 @@
       </div>  
     </div>
 
-     @can('admin')
+     @can('editApps',$deal)
     <x-abutton href="/applications/{{ $deal->id }}/edit">Редактировать</x-abutton>
     @endcan
   </div>

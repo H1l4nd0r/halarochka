@@ -7,7 +7,7 @@
   
   <div class="card-body">
     <div class="card-title">
-       @can('admin')
+       @can('create')
       <x-abutton href="/repayments/create">Добавить оплату</x-abutton>
       @endcan
     </div>

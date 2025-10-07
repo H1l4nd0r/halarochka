@@ -22,7 +22,7 @@
 
 
       <span class="btn text-bg-warning p-2">Инвестиции {{ number_format($investments,0,'.',' ')  }}</span>
-      @can('admin')
+      @can('create')
       <x-abutton href="/cash/create">Добавить инвестицию</x-abutton>
       @endcan
       <span class="btn text-bg-warning p-2">В кассе {{ number_format($available,0,'.',' ')  }}</span>

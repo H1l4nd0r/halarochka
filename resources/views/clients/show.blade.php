@@ -36,7 +36,7 @@
 
     <div class="card">
       <div class="card-body">
-        @foreach($client->files as $index => $file)
+        @foreach($client->files ?? [] as $index => $file)
           <div class="document">
               <a target="_blank" href="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
                   {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
@@ -53,7 +53,7 @@
       </div>
     </div>
     
-    @can('admin')
+    @can('edit',$client)
     <x-abutton href="/clients/{{ $client->id }}/edit">Редактировать</x-abutton>  
     @endcan
     
@@ -78,7 +78,7 @@
       </div>
     </div>
 
-    @can('admin')
+    @can('create')
     <x-abutton href="/deals/create">Добавить</x-abutton>  
     @endcan
     

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+
 
 class ClientsController extends Controller
 {
@@ -30,7 +32,9 @@ class ClientsController extends Controller
      */
     public function show(Client $client)
     {
-        return view('clients.show', ['client' => $client ]);
+        return view('clients.show', [
+            'client' => $client 
+        ]);
     }
 
     /**
@@ -63,7 +67,8 @@ class ClientsController extends Controller
                     'uploaded_at' => now()->toDateTimeString(),
                 ];
             }
-            $validated['files'] = json_encode($fileData); // Явное преобразование в JSON
+            $validated['files'] = $fileData; // Явное преобразование в JSON
+            $validated['user_id'] = Auth::id();
             Client::create($validated);
             
             return redirect('/clients');

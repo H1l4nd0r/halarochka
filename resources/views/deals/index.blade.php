@@ -21,7 +21,7 @@
 
       </form>
       <span class="btn text-bg-warning p-2">В кассе {{ number_format($available,0,'.',' ') }}</span>
-      @can('admin')
+      @can('create')
         <x-abutton href="/deals/create">Добавить договор</x-abutton>
       @endcan
     </div>

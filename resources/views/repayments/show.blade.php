@@ -7,7 +7,7 @@
   
   <div class="card-body">
     <div class="card-title">
-      <a href="/client/add" class="btn btn-outline-primary">Добавить оплату</a>
+      <a href="/repayments" class="btn btn-outline-primary">Закрыть</a>
     </div>
     <table class="table">
   <thead>

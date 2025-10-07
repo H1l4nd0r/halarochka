@@ -67,7 +67,7 @@
             
             <div class="card-title d-flex justify-content-between">
               <h5 class="card-title">Платежи</h5>
-              @can('admin')
+              @can('create')
               <x-abutton href="/repayments/create?deal_id={{ $deal->id }}">Добавить</x-abutton>
               @endcan
             </div>
@@ -89,7 +89,7 @@
             <div class="card-title d-flex justify-content-between">
               <h5 class="card-title">Документы</h5>
             </div>
-            @foreach($deal->files as $index => $file)
+            @foreach($deal->files ?? [] as $index => $file)
               <div class="document">
                   <a target="_blank" href="{{ Storage::url($file['path']) }}" download="{{ $file['name'] }}">
                       {{ $file['name'] }} ({{ round($file['size'] / 1024, 1) }} KB)<br>
@@ -98,7 +98,7 @@
                 <form action="/deals/{{$deal->id}}/delpic/{{ $index }}" method="POST">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-primary">Удвлить</button>
+                  <button type="submit" class="btn btn-primary">Удалить</button>
                 </form>
               </div>
           @endforeach
@@ -110,7 +110,7 @@
       </div>  
     </div>
 
-     @can('admin')
+     @can('edit',$deal)
     <x-abutton href="/deals/{{ $deal->id }}/edit">Редактировать</x-abutton>
     @endcan
   </div>

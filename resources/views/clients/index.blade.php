@@ -7,7 +7,7 @@
   
   <div class="card-body">
     <div class="card-title">
-      @can('admin')
+      @can('create')
         <x-abutton href="/clients/create">Добавить клиента</x-abutton>
       @endcan
     </div>

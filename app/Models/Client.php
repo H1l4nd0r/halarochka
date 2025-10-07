@@ -15,7 +15,7 @@ class Client extends Model
         'files' => 'array'
     ];
     protected $attributes = [
-        'files' => '[]'
+        'files' => null
     ];
     protected $guarded = [];
 

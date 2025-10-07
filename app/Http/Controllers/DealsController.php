@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Auth;
 
 class DealsController extends Controller
 {
@@ -106,8 +107,9 @@ class DealsController extends Controller
                         'uploaded_at' => now()->toDateTimeString(),
                     ];
                 }
-                $validated['files'] = json_encode($fileData);
+                $validated['files'] = $fileData;
                 $validated['fullprice'] = $fullprice;
+                $validated['user_id'] = Auth::id();
                 $validated['status'] = 1;
                 
                 Deal::create($validated);
@@ -170,6 +172,7 @@ class DealsController extends Controller
                 ];
             }
             $validated['fullprice'] = $fullprice;
+            if($deal['user_id'] = null) $validated['user_id'] = Auth::id();
             $validated['files'] = $validated['files'] = array_merge($deal->files, $fileData);
             $validated['client_id'] = $client->id;
 
