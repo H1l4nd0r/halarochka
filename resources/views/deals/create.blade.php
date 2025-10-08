@@ -66,6 +66,29 @@
                     @enderror
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Полная сумма рассрочки <span id="totalSum">0.00</span>  (р.)</label>
+                    <script>
+                        const startPriceInput = document.getElementById('startprice');
+                        const firstPaymentInput = document.getElementById('firstpayment');
+                        const feeInput = document.getElementById('fee');
+                        const totalSumSpan = document.getElementById('totalSum');
+
+                        function updateTotal() {
+                            const startPrice = parseFloat(startPriceInput.value) || 0;
+                            const firstPayment = parseFloat(firstPaymentInput.value) || 0;
+                            const fee = parseFloat(feeInput.value) || 0;
+                            const total = startPrice + fee - firstPayment ;
+
+                            // Форматируем с разделением тысяч и двумя десятичными
+                            totalSumSpan.textContent = total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        }
+
+                        startPriceInput.addEventListener('input', updateTotal);
+                        firstPaymentInput.addEventListener('input', updateTotal);
+                        feeInput.addEventListener('input', updateTotal);
+                    </script>
+                </div>
+                <div class="mb-3">
                     <label for="term" class="form-label">Срок (мес)</label>
                     <input type="number" class="form-control" id="term" name="term" value="{{ old('term') }}">
                     @error('term')
