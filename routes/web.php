@@ -40,6 +40,7 @@ Route::get('/clients/{client}', [ClientsController::class, 'show'])->middleware(
 Route::get('/clients/{client}/edit', [ClientsController::class, 'edit'])->middleware('auth')->can('edit','client');
 Route::patch('/clients/{client}', [ClientsController::class, 'update'])->middleware('auth')->can('edit','client');
 Route::delete('/clients/{client}/delpic/{picId}', [ClientsController::class, 'delpic'])->middleware('auth')->can('edit','client');
+Route::delete('/clients/{client}', [ClientsController::class, 'destroy'])->middleware('auth')->can('admin');
 
 // APPLICATIONS
 Route::get('/applications',[ ApplicationsController::class, 'index'])->middleware('auth');

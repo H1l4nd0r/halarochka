@@ -126,7 +126,15 @@ class ClientsController extends Controller
      */
     public function destroy(Client $client)
     {
-        //
+        // Find the client or fail with 404
+        $clientD = Client::findOrFail($client->id);
+
+        // Delete the record
+        $client->delete();
+
+        // Redirect or return response
+        return redirect('/clients');
+
     }
 
     public function delpic(Client $client, $picId){

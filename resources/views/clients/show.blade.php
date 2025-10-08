@@ -56,6 +56,14 @@
     @can('edit',$client)
     <x-abutton href="/clients/{{ $client->id }}/edit">Редактировать</x-abutton>  
     @endcan
+    <br><br>
+    @can('admin')
+      <form action="/clients/{{$client->id}}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-primary">Удвлить</button>
+              </form>
+    @endcan
     
   </div>
 </div>
