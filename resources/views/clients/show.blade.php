@@ -72,7 +72,7 @@
       <div class="card-body">
         @foreach ($client->deals as $deal)
         <ul>
-          <li>№ {{ $deal->id }} от <a href="/deals/{{ $deal->id }}/edit">{{ $deal->created_at }}</a>  на сумму {{ $deal->startprice }}</li>
+          <li>№ {{ $deal->id }} от <a href="/deals/{{ $deal->id }}">{{ $deal->created_at }}</a>  на сумму {{ $deal->startprice }}</li>
         </ul>
         @endforeach
       </div>
