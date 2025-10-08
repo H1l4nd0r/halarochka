@@ -191,7 +191,14 @@ class DealsController extends Controller
      */
     public function destroy(Deal $deal)
     {
-        //
+        // Find the client or fail with 404
+        $dealD = Client::findOrFail($deal->id);
+
+        // Delete the record
+        $deal->delete();
+
+        // Redirect or return response
+        return redirect('/deals');
     }
 
     public function delpic(Deal $deal, $picId){

@@ -13,10 +13,15 @@
 @csrf
                 <div class="mb-3">
                     <label for="startprice" class="form-label">Клиент</label>
+                    @php
+                        $selectedClient = old('client_id', request()->query('client_id'));
+                    @endphp
                     <select class="form-select" aria-label="Default select example" name="client_id">
-                        <option {{ old('user_id')!=null?'':'selected' }}>...</option>
+                        <option value="" {{ $selectedClient === null ? 'selected' : '' }}>...</option>
                         @foreach ($clients as $client)
-                            <option value="{{ $client->id }}" {{ old('client_id') == $client->id?'selected':'' }}>{{ $client->id }}&nbsp;{{ $client->last_name }}&nbsp;{{ $client->first_name }}&nbsp;{{ $client->middle_name }}&nbsp;{{ $client->phone }}</option> 
+                            <option value="{{ $client->id }}" {{ $selectedClient == $client->id ? 'selected' : '' }}>
+                                {{ $client->id }} {{ $client->last_name }} {{ $client->first_name }} {{ $client->middle_name }} {{ $client->phone }}
+                            </option>
                         @endforeach
                     </select>
                     @error('client_id')

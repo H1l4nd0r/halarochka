@@ -60,6 +60,7 @@ Route::get('/deals/{deal}', [DealsController::class, 'show'])->middleware('auth'
 Route::get('/deals/{deal}/edit', [DealsController::class, 'edit'])->middleware('auth')->can('edit','deal');
 Route::patch('/deals/{deal}', [DealsController::class, 'update'])->middleware('auth')->can('edit','deal');
 Route::delete('/deals/{deal}/delpic/{picId}', [DealsController::class, 'delpic'])->middleware('auth')->can('edit','deal');
+Route::delete('/deals/{deal}', [DealsController::class, 'destroy'])->middleware('auth')->can('admin');
 
 // REPAYMENTS
 Route::get('/repayments',[ RepaymentsController::class, 'index'])->middleware('auth');

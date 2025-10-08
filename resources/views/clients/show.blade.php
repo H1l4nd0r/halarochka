@@ -87,7 +87,7 @@
     </div>
 
     @can('create')
-    <x-abutton href="/deals/create">Добавить</x-abutton>  
+    <x-abutton href="/deals/create?client_id={{ $client->id }}">Добавить</x-abutton>  
     @endcan
     
   </div>

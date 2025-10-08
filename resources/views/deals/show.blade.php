@@ -113,6 +113,14 @@
      @can('edit',$deal)
     <x-abutton href="/deals/{{ $deal->id }}/edit">Редактировать</x-abutton>
     @endcan
+    <br><br>
+    @can('admin')
+      <form action="/deals/{{$deal->id}}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-primary">Удвлить</button>
+              </form>
+    @endcan
   </div>
 
 @endsection
