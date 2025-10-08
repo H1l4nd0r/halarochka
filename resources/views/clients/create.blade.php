@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <div class="container mt-3">
 
     <div class="card">
@@ -33,8 +34,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">Телефон</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" required value="{{ old('phone') }}" placeholder="+79998887766" >
+                    <input type="tel" class="form-control" id="phone" name="phone" required value="{{ old('phone')??'+7' }}" >
                     <x-form-error name="phone"/>
+                    <script>
+                        $(function(){
+                            $('input[name="phone"]').mask('+70000000000');
+                        });
+                    </script>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">E-mail</label>
@@ -50,6 +56,11 @@
                     <label for="idnum" class="form-label">Серия и номер документа</label>
                     <input type="text" class="form-control" id="idnum"  name="idnum" required value="{{ old('idnum') }}">
                     <x-form-error name="idnum"/>
+                    <script>
+                        $(function(){
+                            $('input[name="idnum"]').mask('0000000000');
+                        });
+                    </script>
                 </div>
 
                 <div class="mb-3">
