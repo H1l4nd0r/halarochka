@@ -39,6 +39,16 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <th scope="row">Итого</th>
+          <td>{{ count($deals) }} шт</td>
+          <td></td>
+          <td class="text-end">{{ number_format($totals['tdisbursed'],0,'.',' ')  }}</td>
+          <td class="text-end">{{ number_format($totals['tfirstpayments'],0,'.',' ')  }}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
         @foreach ($deals as $deal)
         <tr>
           <th scope="row">{{ $deal->id }}</th>
@@ -51,16 +61,7 @@
           <td>{{ $deal->goodname }}</td>
         </tr>
         @endforeach
-        <tr>
-          <th scope="row">Итого</th>
-          <td></td>
-          <td></td>
-          <td class="text-end">{{ number_format($totals['tdisbursed'],0,'.',' ')  }}</td>
-          <td class="text-end">{{ number_format($totals['tfirstpayments'],0,'.',' ')  }}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
+
       </tbody>
     </table>
 
