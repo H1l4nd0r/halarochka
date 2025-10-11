@@ -8,7 +8,7 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between">
                 @if( $deal)
-                    <label for="startprice" class="form-label">Договор № {{ $deal->id}} от {{ $deal->created_at}} клиент {{ $deal->client->last_name}} {{ $deal->client->first_name}}</label>
+                    <label for="startprice" class="form-label">Договор № {{ $deal->id}} от {{ $deal->dealdate->format('d-m-Y') }} клиент {{ $deal->client->last_name}} {{ $deal->client->first_name}}</label>
                     <x-abutton href="/deals/{{ $deal->id}}">Отмена</x-abutton>
                 @else
                     <x-abutton href="/repayments">Отмена</x-abutton>
@@ -25,7 +25,7 @@
                         <select class="form-select" aria-label="Default select example" name="deal_id">
                             <option selected>...</option>
                             @foreach ($deals as $deal)
-                                <option value="{{ $deal->id }}">{{ $deal->id }}&nbsp;{{ $deal->created_at }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->phone }}&nbsp;{{ $deal->goodname }}&nbsp;{{ $deal->startprice }}</option> 
+                                <option value="{{ $deal->id }}">№ {{ $deal->id }}&nbsp;от&nbsp;{{ $deal->dealdate->format('d-m-Y') }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->first_name }}&nbsp;{{ $deal->client->phone }}&nbsp;{{ $deal->goodname }}&nbsp;{{ $deal->startprice }}</option> 
                             @endforeach
                         </select>
                         @error('client_id')
