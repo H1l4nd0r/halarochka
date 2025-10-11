@@ -65,29 +65,29 @@ class RepaymentsController extends Controller
             ]);
 
             // process schedule
-            $paydays = $deal->schedule()->where('status','<',2)->get();
-            $allpaid = true;
-            foreach($paydays as $pd){
-                if($paidsumm >= $pd->leftsumm){
-                    $paidsumm-=$pd->leftsumm;
-                    $pd->leftsumm = 0;
-                    $pd->status = 2;
-                }else if($paidsumm < $pd->leftsumm){
-                    $pd->leftsumm -= $paidsumm;
-                    $pd->status = 1;
+            $pds = $deal->schedule()->where('status','<',2)->get();
+            $allpaid = false;
+            for($i=0;$i<count($pds);$i++){
+                if($paidsumm >= $pds[$i]->leftsumm){
+                    $paidsumm-=$pds[$i]->leftsumm;
+                    $pds[$i]->leftsumm = 0;
+                    $pds[$i]->status = 2;
+                }else if($paidsumm < $pds[$i]->leftsumm){
+                    $pds[$i]->leftsumm -= $paidsumm;
+                    $pds[$i]->status = 1;
                     $paidsumm = 0;
                     $allpaid = false;
                 }
 
-                $pd->save();
+                $pds[$i]->save();
 
-                if($paidsumm==0) break;
+                if( $i== count($pds) && $pds[$i]->leftsumm == 0) $allpaid = true;
             }
 
             if($allpaid){
                 $deal->status = 2; // all paid, change status to closed
             }else{
-                $deal->status = 1; // some paid, change status to closed
+                $deal->status = 1; // leav active
             }
 
             $deal->save();
