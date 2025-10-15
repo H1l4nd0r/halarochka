@@ -40,7 +40,7 @@ class ReportsController extends Controller
                             ->whereIn('status', [2, 4]);
                 })
                 ->groupBy('deal_id');
-        })->with('deal')->get();
+        })->with('deal')->orderBy('payday')->get();
         
         return view('reports.nextPayDays', [ 'paydays' => $nextPayments ]);
     }
