@@ -19,8 +19,8 @@
                             <a href="/deals/{{ $payday->deal_id }}">№{{ $payday->deal_id }} от {{ $payday->deal->dealdate->format('d-m-Y') }}</a>
                         </td>
                         <td>{{ $payday->payday->format('d-m-Y') }}</td>
-                        <td>{{ number_format($payday->fullsumm,0,'.',' ') }}</td>
-                        <td>{{ number_format($payday->leftsumm,0,'.',' ') }}</td>
+                        <td class="text-end">{{ number_format($payday->fullsumm,0,'.',' ') }}</td>
+                        <td class="text-end">{{ number_format($payday->leftsumm,0,'.',' ') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
