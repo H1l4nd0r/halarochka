@@ -81,7 +81,7 @@ class RepaymentsController extends Controller
 
                 $pds[$i]->save();
 
-                if( $i== count($pds) && $pds[$i]->leftsumm == 0) $allpaid = true;
+                if( $i==(count($pds)-1) && $pds[$i]->leftsumm == 0) $allpaid = true;
             }
 
             if($allpaid){
