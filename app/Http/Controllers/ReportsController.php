@@ -15,7 +15,7 @@ class ReportsController extends Controller
     }
 
     public function cashFlowReport(){
-        $dealsData = Deal::select([
+        $paydayssData = Deal::select([
             'deals.status',
             DB::raw('SUM(paydays.fullsumm) as texpected'),
             DB::raw('SUM(paydays.leftsumm) as tleft')
@@ -26,7 +26,30 @@ class ReportsController extends Controller
         ])
         ->get();
 
-        return view('reports.cashflow', [ 'stats' => $dealsData ]);
+        $dealsData = Deal::select('status', 
+            DB::raw('SUM(startprice) as tdisbursed'),
+            DB::raw('SUM(firstpayment) as tfirstpayment')
+        )
+        ->groupBy('status')
+        ->get();
+
+        $mergedData = $paydayssData->map(function ($item) use ($dealsData) {
+            // find the matching record in the second collection
+            $match = $dealsData->firstWhere('status', $item->status);
+
+            // add new attribute if match found
+            if ($match) {
+                $item->tdisbursed = $match->tdisbursed;
+                $item->tfirstpayment = $match->tfirstpayment;
+            } else {
+                $item->tdisbursed = 0; // or null if you prefer
+                $item->tfirstpayment = 0; // or null if you prefer
+            }
+
+            return $item;
+        });
+
+        return view('reports.cashflow', [ 'stats' => $mergedData ]);
     }
 
     public function nextPayDaysReport(){
