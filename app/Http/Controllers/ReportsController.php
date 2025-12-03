@@ -49,7 +49,18 @@ class ReportsController extends Controller
             return $item;
         });
 
-        return view('reports.cashflow', [ 'stats' => $mergedData ]);
+        //calculate totals
+        $totals = [];
+        foreach($mergedData as $item){
+            foreach($item->getAttributes() as $key => $val){
+                $totals[$key] = $totals[$key]??0 + $val;
+            }
+        }
+
+        return view('reports.cashflow', [ 
+            'stats' => $mergedData,
+            'totals' =>(object)$totals
+        ]);
     }
 
     public function nextPayDaysReport(){

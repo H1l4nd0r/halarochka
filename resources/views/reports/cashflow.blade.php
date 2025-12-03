@@ -24,6 +24,13 @@
                     <td>{{ number_format($stat->tleft,0,'.',' ') }}</td>
                     </tr>
                 @endforeach
+                <tr class="align-top">
+                    <th scope="row">Итого</th>
+                    <td>{{ number_format($totals->tdisbursed,0,'.',' ') }}</td>
+                    <td>{{ number_format($totals->texpected+$totals->tfirstpayment,0,'.',' ') }}</td>
+                    <td>{{ number_format($totals->texpected+$totals->tfirstpayment-$totals->tleft,0,'.',' ') }}</td>
+                    <td>{{ number_format($totals->tleft,0,'.',' ') }}</td>
+                    </tr>
             </tbody>
             </table>
 
