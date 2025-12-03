@@ -53,7 +53,7 @@ class ReportsController extends Controller
         $totals = [];
         foreach($mergedData as $item){
             foreach($item->getAttributes() as $key => $val){
-                $totals[$key] = $totals[$key]??0 + $val;
+                if($key!='status') $totals[$key] = ($totals[$key]??0) + $val;
             }
         }
 
