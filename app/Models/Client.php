@@ -26,7 +26,6 @@ class Client extends Model
         return $value ?? [];
     }
 
-
     public function deals(){
         return $this->hasMany(Deal::class);
     }
