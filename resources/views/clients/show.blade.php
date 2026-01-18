@@ -73,12 +73,12 @@
   
   <div class="card-body">
     <div class="card-title d-flex justify-content-between">
-      <h5>Договоры</h5>
+      <h5>Активные договоры</h5>
     </div>
 
     <div class="card">
       <div class="card-body">
-        @foreach ($client->deals as $deal)
+        @foreach ($client->activeDeals as $deal)
         <ul>
           <li>№ {{ $deal->id }} от <a href="/deals/{{ $deal->id }}">{{ $deal->created_at }}</a>  на сумму {{ $deal->startprice }}</li>
         </ul>
@@ -89,6 +89,22 @@
     @can('create')
     <x-abutton href="/deals/create?client_id={{ $client->id }}">Добавить</x-abutton>  
     @endcan
+    
+  </div>
+  <div class="card-body">
+    <div class="card-title d-flex justify-content-between">
+      <h5>Закрытые договоры</h5>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        @foreach ($client->closedDeals as $deal)
+        <ul>
+          <li>№ {{ $deal->id }} от <a href="/deals/{{ $deal->id }}">{{ $deal->created_at }}</a>  на сумму {{ $deal->startprice }}</li>
+        </ul>
+        @endforeach
+      </div>
+    </div>
     
   </div>
 </div>

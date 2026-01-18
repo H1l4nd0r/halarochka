@@ -29,4 +29,14 @@ class Client extends Model
     public function deals(){
         return $this->hasMany(Deal::class);
     }
+
+    public function activeDeals(){
+        return $this->hasMany(Deal::class)
+            ->whereNotIn('status', [Deal::DEAL_NEW, Deal::DEAL_CLOSED]);
+    }
+
+    public function closedDeals(){
+        return $this->hasMany(Deal::class)
+            ->where('status', Deal::DEAL_CLOSED);
+    }
 }
