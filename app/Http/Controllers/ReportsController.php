@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Deal;
+use App\Models\Cashfund;
 use App\Models\Payday;
 use Illuminate\Support\Facades\DB;
 
@@ -77,5 +78,29 @@ class ReportsController extends Controller
         })->with('deal')->orderBy('payday')->get();
         
         return view('reports.nextPayDays', [ 'paydays' => $nextPayments ]);
+    }
+
+    public function totalProfit(){
+        $fees = Deal::selectRaw('status, SUM(fee) as total_fee')
+            ->groupBy('status')
+            ->get();
+
+        $totalFees = [
+            'closedFees' => 0,
+            'expectingFees' => 0,
+        ];
+
+        foreach($fees as $fee){
+            if($fee['status'] == Deal::DEAL_CLOSED) $totalFees['closedFees'] = $fee['total_fee'];
+            else $totalFees['expectingFees'] += $fee['total_fee'];
+        }
+
+        $totalInvestments = Cashfund::where('type', 0)
+            ->value(DB::raw('SUM(summ)'));
+        
+        return view('reports.totalProfit', [ 
+            'totalFees' => $totalFees, 
+            'totalInvestments' => $totalInvestments 
+        ]);
     }
 }
