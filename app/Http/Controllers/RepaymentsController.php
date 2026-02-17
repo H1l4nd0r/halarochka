@@ -39,21 +39,30 @@ class RepaymentsController extends Controller
     public function store(Request $request)
     {
         try{
-            request()->validate([
+            $validated = request()->validate([
                 'factday' => ['required'],
                 'summ' => ['required','min:3'],
                 'deal_id' => ['required'],
+                'idempotency_key' => ['required', 'uuid']
             ]);
 
             $paidsumm = request('summ');
             $deal = Deal::find(request('deal_id'));
-            $rep = $deal->repayments()->create([
-                'factday' => request('factday'),
-                'summ' => $paidsumm,
-                'deal_id' => request('deal_id'),
-                'status' => 1, // TODO status model
-                'user_id' => Auth::id()
-            ]);
+            
+            try {
+                $rep = $deal->repayments()->create([
+                    'factday' => request('factday'),
+                    'summ' => $paidsumm,
+                    'deal_id' => request('deal_id'),
+                    'status' => 1, // TODO status model
+                    'user_id' => Auth::id(),
+                    'idempotency_key' => $validated['idempotency_key']
+                ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+                // If duplicate idempotency_key, find and redirect to existing repayment's deal
+                return redirect('/deals/' . $validated['deal_id']);
+
+            }
 
             // add cashfund record
             Cashfund::create([
@@ -61,7 +70,8 @@ class RepaymentsController extends Controller
                 'summ' => $paidsumm,
                 'type' => Cashfund::CASHFUND_REPAYMENT,
                 'factday' => request('factday'),
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
+                'idempotency_key' => $validated['idempotency_key']
             ]);
 
             // process schedule

@@ -51,6 +51,7 @@ class ClientsController extends Controller
                 'email' => ['required','email'],
                 'iddoc' => ['required'],
                 'idnum' => ['required','min:10'],
+                'idempotency_key' => ['required', 'uuid'],
                 'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
             ]);
 
@@ -69,7 +70,13 @@ class ClientsController extends Controller
             }
             $validated['files'] = $fileData; // Явное преобразование в JSON
             $validated['user_id'] = Auth::id();
-            Client::create($validated);
+            
+            try {
+                Client::create($validated);
+            } catch (\Illuminate\Database\QueryException $e) {
+                // If duplicate idempotency_key, find and redirect to existing client
+                return redirect('/clients'); 
+            }
             
             return redirect('/clients');
         } catch (\Illuminate\Validation\ValidationException $e) {

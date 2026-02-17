@@ -85,6 +85,7 @@ class DealsController extends Controller
                 'fee' => ['required'],
                 'term' => ['required'],
                 'client_id' => ['required'],
+                'idempotency_key' => ['required', 'uuid'],
                 'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120'
             ]);
 
@@ -112,7 +113,12 @@ class DealsController extends Controller
                 $validated['user_id'] = Auth::id();
                 $validated['status'] = 1;
                 
-                Deal::create($validated);
+                try {
+                    Deal::create($validated);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // If duplicate idempotency_key, find and redirect to existing deal
+                    return redirect('/deals');
+                }
 
             }
 

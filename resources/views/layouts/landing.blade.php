@@ -382,6 +382,7 @@ function calculate() {
             </div>
             <div class="modal-body">
                 <form id="installmentForm">
+                    <input type="hidden" name="idempotency_key" value="{{ Str::uuid() }}">
                     <div class="mb-3">
                         <label for="productName" class="form-label">Наименование товара</label>
                         <input type="text" class="form-control" id="productName" required>
@@ -455,7 +456,8 @@ function calculate() {
             startprice: document.getElementById('productPrice').value,
             firstpayment: document.getElementById('initialPayment').value,
             term: document.getElementById('loanTerm').value,
-            monthlyFee: document.querySelector('input[name="guarantors"]:checked').value
+            monthlyFee: document.querySelector('input[name="guarantors"]:checked').value,
+            idempotency_key: document.getElementById('idempotency_key').value,
         };
 
         // Call the service

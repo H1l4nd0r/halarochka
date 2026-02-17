@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Deal extends Model
 {
@@ -76,13 +77,14 @@ class Deal extends Model
 
         // add cashfund records
         // disbursement
-        
+
         Cashfund::create([
             'deal_id' => $this->id,
             'summ' => -1*$this->startprice,
             'type' => Cashfund::CASHFUND_DISBURSEMENT,
             'factday' => request('dealdate'),
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'idempotency_key' => $this->idempotency_key
         ]);
         // firstpayment
         Cashfund::create([
@@ -90,7 +92,8 @@ class Deal extends Model
             'summ' => $this->firstpayment,
             'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
             'factday' => request('dealdate'),
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'idempotency_key' => $this->idempotency_key
         ]);                
 
         $monthly = $this->fullprice / $this->term;
@@ -130,10 +133,10 @@ class Deal extends Model
             }
         });
         
-        // reschedule when activating deal
+        // reschedule when activating deal and when updating deal with 0 repayments
         static::updated(function ($deal) {
             // put your check here
-            if ( $deal->getOriginal('status') == self::DEAL_NEW && $deal->status == self::DEAL_ACTIVE) {
+            if ( $deal->getOriginal('status') == self::DEAL_NEW && $deal->status == self::DEAL_ACTIVE || $deal->repayments()->count() == 0) {
                 $deal->reschedule();
             }
         });

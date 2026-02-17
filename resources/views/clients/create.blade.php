@@ -12,6 +12,7 @@
             </div>
             <form method="post" action="/clients" enctype="multipart/form-data">
 @csrf
+                <input type="hidden" name="idempotency_key" value="{{ Str::uuid() }}">
                 <div class="mb-3">
                     <label for="first_name" class="form-label">Имя</label>
                     <input type="text" class="form-control" id="first_name" name="first_name" required value="{{ old('first_name') }}">

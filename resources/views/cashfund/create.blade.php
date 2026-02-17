@@ -11,6 +11,7 @@
             </div>
             <form method="post" action="/cash">
 @csrf
+                <input type="hidden" name="idempotency_key" value="{{ Str::uuid() }}">
                 <div class="mb-3">
                     <label for="factday" class="form-label">Дата операции</label>
                     <input type="date" class="form-control" id="factday" name="factday" required value="{{ old('factday') }}">

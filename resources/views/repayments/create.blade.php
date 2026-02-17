@@ -17,6 +17,7 @@
             </div>
             <form method="post" action="/repayments">
 @csrf
+                <input type="hidden" name="idempotency_key" value="{{ Str::uuid() }}">
                 @if( $deal)
                     <input type="hidden" name="deal_id" value="{{ $deal->id }}"/>
                 @else

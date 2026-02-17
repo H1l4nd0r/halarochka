@@ -11,6 +11,7 @@
             </div>
             <form method="post" action="/deals" enctype="multipart/form-data">
 @csrf
+                <input type="hidden" name="idempotency_key" value="{{ Str::uuid() }}">
                 <div class="mb-3">
                     <label for="startprice" class="form-label">Клиент</label>
                     @php

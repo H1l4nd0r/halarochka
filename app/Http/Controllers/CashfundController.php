@@ -44,14 +44,20 @@ class CashfundController extends Controller
             $validated = request()->validate([
                 'factday' => ['required'],
                 'summ' => ['required','min:3'],
-                'description' => ['string']
+                'description' => ['string'],
+                'idempotency_key' => ['required', 'uuid']
             ]);
 
             $validated['type'] = Cashfund::CASHFUND_INVESTMENT;
 
             // TODO separate repayment distribution to reuse in deal edit action
             
-            Cashfund::create($validated);
+            try {
+                Cashfund::create($validated);
+            } catch (\Illuminate\Database\QueryException $e) {
+                // If duplicate idempotency_key, redirect to cash index
+                return redirect('/cash');
+            }
 
             return redirect('/cash');
         } catch (\Illuminate\Validation\ValidationException $e) {
