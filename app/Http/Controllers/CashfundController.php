@@ -18,7 +18,8 @@ class CashfundController extends Controller
         return view('cashfund.index', [
             'funds' => Cashfund::with(['deal','repayment'])
             ->type((int)$type) // всегда применяем фильтр
-            ->latest()->get(),
+            ->orderByDesc('factday')
+            ->get(),
             'types' => Cashfund::getTypes(),
             'investments' => $totals[Cashfund::CASHFUND_INVESTMENT],
             'available' => $totals[Cashfund::CASHFUND_INVESTMENT] + $totals[Cashfund::CASHFUND_FIRSTPAYMENT] + $totals[Cashfund::CASHFUND_REPAYMENT] + $totals[Cashfund::CASHFUND_DISBURSEMENT],
