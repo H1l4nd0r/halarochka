@@ -27,6 +27,7 @@ class DealsController extends Controller
 
         $totals['tdisbursed'] = collect($deals)->sum('startprice');
         $totals['tfirstpayments'] = collect($deals)->sum('firstpayment');
+        $totals['tfee'] = collect($deals)->sum('fee');
 
         $cash = Cashfund::getTotals();
 

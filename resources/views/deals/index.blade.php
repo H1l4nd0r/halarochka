@@ -45,7 +45,7 @@
           <td></td>
           <td class="text-end">{{ number_format($totals['tdisbursed'],0,'.',' ')  }}</td>
           <td class="text-end">{{ number_format($totals['tfirstpayments'],0,'.',' ')  }}</td>
-          <td></td>
+          <td class="text-end">{{ number_format($totals['tfee'],0,'.',' ')  }}</td>
           <td></td>
           <td></td>
         </tr>
