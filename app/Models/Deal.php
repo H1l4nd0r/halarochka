@@ -87,17 +87,18 @@ class Deal extends Model
             'idempotency_key' => $this->idempotency_key
         ]);
         // firstpayment
-        Cashfund::create([
-            'deal_id' => $this->id,
-            'summ' => $this->firstpayment,
-            'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
-            'factday' => request('dealdate'),
-            'user_id' => Auth::id(),
-            'idempotency_key' => $this->idempotency_key
-        ]);                
+        if($this->firstpayment>0){
+            Cashfund::create([
+                'deal_id' => $this->id,
+                'summ' => $this->firstpayment,
+                'type' => Cashfund::CASHFUND_FIRSTPAYMENT,
+                'factday' => request('dealdate'),
+                'user_id' => Auth::id(),
+                'idempotency_key' => $this->idempotency_key
+            ]);
+        }
 
         $monthly = $this->fullprice / $this->term;
-
         for($i=0;$i<$this->term;$i++){
             Payday::create([
                 'deal_id' => $this->id,
