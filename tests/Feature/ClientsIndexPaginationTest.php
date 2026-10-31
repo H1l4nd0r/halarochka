@@ -54,6 +54,9 @@ class ClientsIndexPaginationTest extends TestCase
         $response->assertSee('Всего: 35');
         $response->assertSee('Страница 1 из 3');
         $response->assertSee('page=2');
+        // bootstrap-5 pagination view is used, no unstyled tailwind SVG arrows
+        $this->assertTrue(str_contains($response->getContent(), 'page-link'));
+        $this->assertFalse(str_contains($response->getContent(), '<svg'));
     }
 
     public function test_index_second_page_shows_next_rows(): void

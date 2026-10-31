@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void{
         Model::preventLazyLoading();
+        // render pagination with Bootstrap 5 markup (app is Bootstrap-based, no Tailwind CSS)
+        Paginator::useBootstrapFive();
         //
         Gate::define('admin',function($user){
             $roles = $this->getUserRoles($user);
