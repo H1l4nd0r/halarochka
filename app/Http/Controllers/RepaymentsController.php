@@ -13,11 +13,18 @@ class RepaymentsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = (int) $request->input('per_page', 15);
+        $perPage = min(max($perPage, 1), 100);
+
+        $repayments = Repayment::with('deal')->latest()
+            ->paginate($perPage)
+            ->withQueryString();
+
         return view('repayments.index', [
-            'repayments' => Repayment::with('deal')->latest()->get()
-        ]);        
+            'repayments' => $repayments
+        ]);
     }
 
     /**
