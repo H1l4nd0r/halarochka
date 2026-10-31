@@ -34,6 +34,25 @@
   </tbody>
 </table>
 
+<div class="d-flex justify-content-between align-items-center mt-3">
+  <small class="text-muted">
+    Всего: {{ $clients->total() }} · Страница {{ $clients->currentPage() }} из {{ $clients->lastPage() }}
+  </small>
+  <div>
+    <select class="form-select form-select-sm d-inline-block w-auto"
+            onchange="window.location.search='per_page='+this.value">
+      <option value="15" @selected(request('per_page', '15') == '15')>15 на стр.</option>
+      <option value="30" @selected(request('per_page') == '30')>30 на стр.</option>
+      <option value="50" @selected(request('per_page') == '50')>50 на стр.</option>
+      <option value="100" @selected(request('per_page') == '100')>100 на стр.</option>
+    </select>
+  </div>
+</div>
+
+<div class="mt-2">
+  {{ $clients->links() }}
+</div>
+
   </div>
 
 @endsection

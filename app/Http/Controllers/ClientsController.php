@@ -13,11 +13,18 @@ class ClientsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('clients.index',[
-            'clients' => Client::orderBy('last_name', 'asc')->get()
-        ] );
+        $perPage = (int) $request->input('per_page', 15);
+        $perPage = min(max($perPage, 1), 100);
+
+        $clients = Client::orderBy('last_name', 'asc')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('clients.index', [
+            'clients' => $clients
+        ]);
     }
 
     /**
