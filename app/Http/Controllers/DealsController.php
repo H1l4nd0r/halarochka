@@ -19,17 +19,28 @@ class DealsController extends Controller
      */
     public function index(Request $request)
     {
+        $perPage = (int) $request->input('per_page', 15);
+        $perPage = min(max($perPage, 1), 100);
+
         $status = $request->input('status')?$request->input('status'):1;
+
+        // «Итого» считается по всему отфильтрованному набору, а не по текущей странице
+        $totalsAgg = Deal::query()
+            ->when($status, fn($q) => $q->status($status))
+            ->selectRaw('SUM(startprice) as tdisbursed, SUM(firstpayment) as tfirstpayments, SUM(fee) as tfee')
+            ->first();
+
+        $totals['tdisbursed'] = $totalsAgg->tdisbursed ?? 0;
+        $totals['tfirstpayments'] = $totalsAgg->tfirstpayments ?? 0;
+        $totals['tfee'] = $totalsAgg->tfee ?? 0;
+
+        $cash = Cashfund::getTotals();
 
         $deals = Deal::with('client')
             ->when($status, fn($q) => $q->status($status))
-            ->orderBy('dealdate','desc')->get();
-
-        $totals['tdisbursed'] = collect($deals)->sum('startprice');
-        $totals['tfirstpayments'] = collect($deals)->sum('firstpayment');
-        $totals['tfee'] = collect($deals)->sum('fee');
-
-        $cash = Cashfund::getTotals();
+            ->orderBy('dealdate','desc')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return view('deals.index', [
             'deals' => $deals,

@@ -13,17 +13,21 @@ class CashfundController extends Controller
      */
     public function index(Request $request)
     {
+        $perPage = (int) $request->input('per_page', 15);
+        $perPage = min(max($perPage, 1), 100);
+
         $type = $request->input('type');
         $totals = Cashfund::getTotals();
         return view('cashfund.index', [
             'funds' => Cashfund::with(['deal','repayment'])
             ->type((int)$type) // всегда применяем фильтр
             ->orderByDesc('factday')
-            ->get(),
+            ->paginate($perPage)
+            ->withQueryString(),
             'types' => Cashfund::getTypes(),
             'investments' => $totals[Cashfund::CASHFUND_INVESTMENT],
             'available' => $totals[Cashfund::CASHFUND_INVESTMENT] + $totals[Cashfund::CASHFUND_FIRSTPAYMENT] + $totals[Cashfund::CASHFUND_REPAYMENT] + $totals[Cashfund::CASHFUND_DISBURSEMENT],
-        ]);        
+        ]);
     }
 
     /**
