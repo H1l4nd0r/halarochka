@@ -15,15 +15,15 @@ class RepaymentsController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 15);
-        $perPage = min(max($perPage, 1), 100);
+        $perPage = $this->perPage($request);
 
         $repayments = Repayment::with('deal')->latest()
             ->paginate($perPage)
             ->withQueryString();
 
         return view('repayments.index', [
-            'repayments' => $repayments
+            'repayments' => $repayments,
+            'perPage' => $perPage
         ]);
     }
 

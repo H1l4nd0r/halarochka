@@ -19,8 +19,7 @@ class DealsController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 15);
-        $perPage = min(max($perPage, 1), 100);
+        $perPage = $this->perPage($request);
 
         $status = $request->input('status')?$request->input('status'):1;
 
@@ -44,6 +43,7 @@ class DealsController extends Controller
 
         return view('deals.index', [
             'deals' => $deals,
+            'perPage' => $perPage,
             'totals' => $totals,
             'available' => $cash[Cashfund::CASHFUND_INVESTMENT] + $cash[Cashfund::CASHFUND_FIRSTPAYMENT] + $cash[Cashfund::CASHFUND_REPAYMENT] + $cash[Cashfund::CASHFUND_DISBURSEMENT],
         ]);

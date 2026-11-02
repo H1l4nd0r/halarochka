@@ -40,11 +40,11 @@
   </small>
   <div>
     <select class="form-select form-select-sm d-inline-block w-auto"
-            onchange="window.location.search='per_page='+this.value">
-      <option value="15" @selected(request('per_page', '15') == '15')>15 на стр.</option>
-      <option value="30" @selected(request('per_page') == '30')>30 на стр.</option>
-      <option value="50" @selected(request('per_page') == '50')>50 на стр.</option>
-      <option value="100" @selected(request('per_page') == '100')>100 на стр.</option>
+            onchange="document.cookie='per_page='+this.value+'; path=/; max-age=31536000; SameSite=Lax'; var s=window.location.search; s = /[?&]per_page=/.test(s) ? s.replace(/([?&]per_page=)[^&]*/, '$1'+this.value) : s + (s?'&':'?') + 'per_page=' + this.value; window.location.search=s;">
+      <option value="15" @selected($perPage == 15)>15 на стр.</option>
+      <option value="30" @selected($perPage == 30)>30 на стр.</option>
+      <option value="50" @selected($perPage == 50)>50 на стр.</option>
+      <option value="100" @selected($perPage == 100)>100 на стр.</option>
     </select>
   </div>
 </div>

@@ -15,15 +15,15 @@ class ClientsController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 15);
-        $perPage = min(max($perPage, 1), 100);
+        $perPage = $this->perPage($request);
 
         $clients = Client::orderBy('last_name', 'asc')
             ->paginate($perPage)
             ->withQueryString();
 
         return view('clients.index', [
-            'clients' => $clients
+            'clients' => $clients,
+            'perPage' => $perPage
         ]);
     }
 

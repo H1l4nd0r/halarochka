@@ -13,12 +13,12 @@ class CashfundController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 15);
-        $perPage = min(max($perPage, 1), 100);
+        $perPage = $this->perPage($request);
 
         $type = $request->input('type');
         $totals = Cashfund::getTotals();
         return view('cashfund.index', [
+            'perPage' => $perPage,
             'funds' => Cashfund::with(['deal','repayment'])
             ->type((int)$type) // всегда применяем фильтр
             ->orderByDesc('factday')

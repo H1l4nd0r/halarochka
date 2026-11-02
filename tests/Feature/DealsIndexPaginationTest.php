@@ -130,6 +130,43 @@ class DealsIndexPaginationTest extends TestCase
         $this->assertSame(35, $this->rowCount($response->getContent()));
     }
 
+    public function test_per_page_from_cookie(): void
+    {
+        $this->createDeals(35);
+
+        $response = $this->actingAs($this->createUser())
+            ->withCookie('per_page', '30')
+            ->get('/deals?status=2');
+
+        $response->assertOk();
+        $this->assertSame(30, $this->rowCount($response->getContent()));
+    }
+
+    public function test_url_per_page_overrides_cookie(): void
+    {
+        $this->createDeals(35);
+
+        $response = $this->actingAs($this->createUser())
+            ->withCookie('per_page', '30')
+            ->get('/deals?status=2&per_page=15');
+
+        $response->assertOk();
+        $this->assertSame(15, $this->rowCount($response->getContent()));
+    }
+
+    public function test_cookie_per_page_is_clamped(): void
+    {
+        $this->createDeals(35);
+
+        $response = $this->actingAs($this->createUser())
+            ->withCookie('per_page', '500')
+            ->get('/deals?status=2');
+
+        $response->assertOk();
+        // clamped to 100 > 35 rows, so all 35 fit on one page
+        $this->assertSame(35, $this->rowCount($response->getContent()));
+    }
+
     public function test_guest_cannot_access_deals_index(): void
     {
         $this->createDeals(5);
