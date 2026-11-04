@@ -25,14 +25,23 @@
                         <x-nav-link href="/repayments" :active="request()->is('repayments')">Поступления</x-nav-link>
                         <x-nav-link href="/reports" :active="request()->is('reports')">Отчеты</x-nav-link>
                         <x-nav-link href="/cash" :active="request()->is('cash')">Касса</x-nav-link>
-                        <x-nav-link href="#">&nbsp;</x-nav-link>
-                        <x-nav-link href="#" :active="false">Hello {{ Auth::user()->name }}</x-nav-link>
                     </ul>
-                    
-                    <form id="logoutform" method="POST" action="/logout">
-                        @csrf
-                        <button form="logoutform" type="submit" class="btn btn-primary">Выход</button>
-                    </form>        
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ Auth::user()->name }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/profile">Профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form id="logoutform" method="POST" action="/logout">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">Выход</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                     
                 </div>
                 @endauth

@@ -10,6 +10,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\CashfundController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -19,6 +20,10 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::get('/login', [SessionController::class, 'create'])->name('login');
 Route::post('/login', [SessionController::class, 'store']);
 Route::post('/logout', [SessionController::class, 'destroy']);
+
+// PROFILE
+Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth')->name('profile.index');
+Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->middleware('auth');
 
 // DASH
 Route::view('/', 'layouts.landing');
