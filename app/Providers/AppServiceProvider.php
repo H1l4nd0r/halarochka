@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Role;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +29,13 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading();
         // render pagination with Bootstrap 5 markup (app is Bootstrap-based, no Tailwind CSS)
         Paginator::useBootstrapFive();
+
+        // Защита от брутфорса кода 2FA при входе: 5 попыток в минуту
+        RateLimiter::for('login-2fa', function (Request $request) {
+            $key = 'login-2fa:' . ($request->session()->get('2fa_login_user_id') ?? $request->ip());
+
+            return Limit::perMinute(5)->by($key);
+        });
         //
         Gate::define('admin',function($user){
             $roles = $this->getUserRoles($user);

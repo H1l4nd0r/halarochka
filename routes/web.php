@@ -11,6 +11,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\CashfundController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -21,9 +22,19 @@ Route::get('/login', [SessionController::class, 'create'])->name('login');
 Route::post('/login', [SessionController::class, 'store']);
 Route::post('/logout', [SessionController::class, 'destroy']);
 
+// AUTH 2FA (Google Authenticator) — шаг входа по коду
+Route::get('/login/2fa', [TwoFactorController::class, 'login'])->middleware('guest')->name('login.two-factor');
+Route::post('/login/2fa', [TwoFactorController::class, 'loginVerify'])->middleware('guest')->middleware('throttle:login-2fa')->name('login.two-factor.verify');
+
 // PROFILE
 Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth')->name('profile.index');
 Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->middleware('auth');
+
+// PROFILE 2FA (Google Authenticator)
+Route::post('/profile/two-factor', [TwoFactorController::class, 'start'])->middleware('auth')->name('profile.two-factor.start');
+Route::post('/profile/two-factor/verify', [TwoFactorController::class, 'verify'])->middleware('auth')->name('profile.two-factor.verify');
+Route::post('/profile/two-factor/cancel', [TwoFactorController::class, 'cancel'])->middleware('auth')->name('profile.two-factor.cancel');
+Route::post('/profile/two-factor/disable', [TwoFactorController::class, 'disable'])->middleware('auth')->name('profile.two-factor.disable');
 
 // DASH
 Route::view('/', 'layouts.landing');

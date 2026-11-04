@@ -2,16 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TwoFactorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
 {
+    public function __construct(private TwoFactorService $twoFactor)
+    {
+    }
+
     public function index()
     {
+        $user = Auth::user();
+
+        $qrSvg = null;
+
+        // Идёт подключение Google Authenticator — показываем QR-код
+        if (session('two_factor_secret')) {
+            $otpauth = $this->twoFactor->qrCodeUrl(session('two_factor_secret'), $user->email);
+            $qrSvg = $this->twoFactor->qrCodeSvg($otpauth);
+        }
+
         return view('profile.index', [
-            'user' => Auth::user(),
+            'user' => $user,
+            'qrSvg' => $qrSvg,
         ]);
     }
 

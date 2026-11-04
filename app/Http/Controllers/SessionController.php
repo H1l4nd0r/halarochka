@@ -18,20 +18,33 @@ class SessionController extends Controller
             'password' => ['required'],
         ]);
 
-        if(!Auth::attempt($atts, true)){
+        if(!Auth::validate($atts)){
             throw ValidationException::withMessages([
                 'email' => 'Неверный логин или пароль'
             ]);
         }
-    
+
+        $user = Auth::getLastAttempted();
+
+        // Если включён Google Authenticator — не логируем, запрашиваем код
+        if($user->two_factor_secret){
+            request()->session()->regenerateToken(); // Новый CSRF-токен до полного входа
+            session()->put('2fa_login_user_id', $user->id);
+            session()->save();
+
+            return redirect()->route('login.two-factor');
+        }
+
+        Auth::login($user, remember: true);
+
         // Полная регенерация сессии
         request()->session()->invalidate();  // Удаляем старую сессию
         request()->session()->regenerateToken(); // Новый CSRF-токен
-        
+
         // Привязываем сессию к пользователю
-        session()->put('user_session_bind', Auth::id());
+        session()->put('user_session_bind', $user->id);
         session()->save(); // Явное сохранение
-        
+
         return redirect('/dashboard');
     }
 

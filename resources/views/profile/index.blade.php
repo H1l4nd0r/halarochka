@@ -53,6 +53,86 @@
                 </div>
             </form>
 
+            <hr>
+
+            <h5 class="mb-3">Двухфакторная аутентификация</h5>
+
+            @if (session('two_factor_secret'))
+
+                <p class="text-muted small">
+                    Отсканируйте QR-код в Google Authenticator (или введите ключ вручную)
+                    и введите 6-значный код из приложения
+                </p>
+
+                @if ($qrSvg)
+                    <div class="text-center mb-3" style="display:inline-block;">
+                        {!! $qrSvg !!}
+                    </div>
+                @endif
+
+                <div class="mb-3">
+                    <label class="form-label">Ключ (ввод вручную)</label>
+                    <input type="text" class="form-control font-monospace" value="{{ session('two_factor_secret') }}" readonly>
+                </div>
+
+                <form method="post" action="{{ route('profile.two-factor.verify') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="two_factor_code" class="form-label">Код из Google Authenticator</label>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                               class="form-control" id="two_factor_code" name="code"
+                               value="{{ old('code') }}" required>
+                        <x-form-error name="code"/>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" form="cancel-two-factor" class="btn btn-outline-secondary">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Подтвердить</button>
+                    </div>
+                </form>
+
+                <form id="cancel-two-factor" method="post" action="{{ route('profile.two-factor.cancel') }}">
+                    @csrf
+                </form>
+
+            @elseif ($user->two_factor_secret)
+
+                <div class="mb-3">
+                    <span class="badge bg-success">Включено</span>
+                    <div class="text-muted small mt-1">
+                        При входе в систему будет запрашиваться код из Google Authenticator
+                    </div>
+                </div>
+
+                <form method="post" action="{{ route('profile.two-factor.disable') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="disable_two_factor_code" class="form-label">Код из Google Authenticator</label>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                               class="form-control" id="disable_two_factor_code" name="code"
+                               value="{{ old('code') }}" required>
+                        <x-form-error name="code"/>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <x-abutton href="/dashboard">Отмена</x-abutton>
+                        <button type="submit" class="btn btn-outline-danger">Отключить</button>
+                    </div>
+                </form>
+
+            @else
+
+                <p class="text-muted small">
+                    Подключите Google Authenticator для дополнительной защиты учётной записи
+                </p>
+
+                <form method="post" action="{{ route('profile.two-factor.start') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">Подключить Google Authenticator</button>
+                </form>
+
+            @endif
+
         </div>
 
     </div>
