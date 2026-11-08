@@ -103,4 +103,32 @@ class ReportsController extends Controller
             'totalInvestments' => $totalInvestments 
         ]);
     }
+
+    public function reconciliationReport(){
+        $deals = Deal::where('status', Deal::DEAL_CLOSED)
+            ->with('client')
+            ->select('deals.*',
+                DB::raw('(SELECT COALESCE(SUM(summ),0) FROM repayments WHERE repayments.deal_id = deals.id) as paid_total')
+            )
+            ->get()
+            ->map(function ($deal) {
+                $deal->full_cost  = (int)$deal->fullprice;
+                $deal->paid_total = (int)$deal->paid_total;
+                $deal->difference = $deal->paid_total - $deal->full_cost;
+                return $deal;
+            })
+            ->filter(fn ($deal) => $deal->difference !== 0)
+            ->values();
+
+        $totals = [
+            'full_cost'  => (int) $deals->sum('full_cost'),
+            'paid_total' => (int) $deals->sum('paid_total'),
+        ];
+        $totals['difference'] = $totals['paid_total'] - $totals['full_cost'];
+
+        return view('reports.reconciliation', [
+            'deals'  => $deals,
+            'totals' => (object)$totals,
+        ]);
+    }
 }

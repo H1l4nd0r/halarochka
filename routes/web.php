@@ -45,6 +45,7 @@ Route::get('/dashboard',[ PagesController::class, 'index'])->middleware('auth');
 Route::get('/reports/cashflow', [ ReportsController::class, 'cashFlowReport'])->middleware('auth');
 Route::get('/reports/nextpaydays', [ ReportsController::class, 'nextPayDaysReport'])->middleware('auth');
 Route::get('/reports/totalprofit', [ ReportsController::class, 'totalProfit'])->middleware('auth');
+Route::get('/reports/reconciliation', [ ReportsController::class, 'reconciliationReport'])->middleware('auth');
 Route::get('/reports', [ ReportsController::class, 'index'])->middleware('auth');
 
 // RESOURCES
