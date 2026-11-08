@@ -20,7 +20,7 @@
                         <td><a href="/clients/{{ $deal->client_id }}">{{ $deal->client->last_name }} {{ $deal->client->first_name }}</a></td>
                         <td class="text-end">{{ number_format($deal->full_cost, 0, '.', ' ') }}</td>
                         <td class="text-end">{{ number_format($deal->paid_total, 0, '.', ' ') }}</td>
-                        <td class="text-end text-danger">{{ number_format($deal->difference, 0, '.', ' ') }}</td>
+                        <td class="text-end {{ $deal->difference > 0 ? 'text-success' : 'text-danger' }}">{{ number_format($deal->difference, 0, '.', ' ') }}</td>
                     </tr>
                     @empty
                     <tr>
@@ -32,7 +32,10 @@
                         <th scope="row" colspan="2">Итого</th>
                         <td class="text-end">{{ number_format($totals->full_cost, 0, '.', ' ') }}</td>
                         <td class="text-end">{{ number_format($totals->paid_total, 0, '.', ' ') }}</td>
-                        <td class="text-end">{{ number_format($totals->difference, 0, '.', ' ') }}</td>
+                        <td class="text-end">
+                            <div class="text-success">Переплаты: {{ number_format($totals->overpayments, 0, '.', ' ') }}</div>
+                            <div class="text-danger">Недоплаты: {{ number_format($totals->underpayments, 0, '.', ' ') }}</div>
+                        </td>
                     </tr>
                     @endif
                 </tbody>

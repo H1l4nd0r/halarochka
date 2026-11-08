@@ -121,10 +121,11 @@ class ReportsController extends Controller
             ->values();
 
         $totals = [
-            'full_cost'  => (int) $deals->sum('full_cost'),
-            'paid_total' => (int) $deals->sum('paid_total'),
+            'full_cost'     => (int) $deals->sum('full_cost'),
+            'paid_total'    => (int) $deals->sum('paid_total'),
+            'overpayments'  => (int) $deals->where('difference', '>', 0)->sum('difference'),
+            'underpayments' => (int) $deals->where('difference', '<', 0)->sum('difference'),
         ];
-        $totals['difference'] = $totals['paid_total'] - $totals['full_cost'];
 
         return view('reports.reconciliation', [
             'deals'  => $deals,
