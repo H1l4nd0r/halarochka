@@ -26,7 +26,7 @@ class CashfundController extends Controller
             ->withQueryString(),
             'types' => Cashfund::getTypes(),
             'investments' => $totals[Cashfund::CASHFUND_INVESTMENT],
-            'available' => $totals[Cashfund::CASHFUND_INVESTMENT] + $totals[Cashfund::CASHFUND_FIRSTPAYMENT] + $totals[Cashfund::CASHFUND_REPAYMENT] + $totals[Cashfund::CASHFUND_DISBURSEMENT],
+            'available' => $totals[Cashfund::CASHFUND_INVESTMENT] + $totals[Cashfund::CASHFUND_FIRSTPAYMENT] + $totals[Cashfund::CASHFUND_REPAYMENT] + $totals[Cashfund::CASHFUND_DISBURSEMENT] + $totals[Cashfund::CASHFUND_DIVIDEND],
         ]);
     }
 

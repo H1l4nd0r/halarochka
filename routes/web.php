@@ -80,6 +80,10 @@ Route::patch('/deals/{deal}', [DealsController::class, 'update'])->middleware('a
 Route::delete('/deals/{deal}/delpic/{picId}', [DealsController::class, 'delpic'])->middleware('auth')->can('edit','deal');
 Route::delete('/deals/{deal}', [DealsController::class, 'destroy'])->middleware('auth')->can('admin');
 
+// DIVIDENDS (только admin)
+Route::get('/deals/{deal}/dividends', [DealsController::class, 'dividendForm'])->middleware('auth')->can('admin');
+Route::post('/deals/{deal}/dividends', [DealsController::class, 'storeDividend'])->middleware('auth')->can('admin');
+
 // REPAYMENTS
 Route::get('/repayments',[ RepaymentsController::class, 'index'])->middleware('auth');
 Route::get('/repayments/create', [RepaymentsController::class, 'create'])->middleware('auth');

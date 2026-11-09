@@ -53,6 +53,22 @@ class Deal extends Model
     public function scopeStatus($query, $status){
         return $query->where('status', '=', $status);
     }
+
+    /**
+     * Договор закрыт (дивиденды выводятся только по закрытому договору)
+     */
+    public function isClosed(): bool
+    {
+        return $this->status == self::DEAL_CLOSED;
+    }
+
+    /**
+     * Сколько наценки (прибыли) ещё доступно к выводу дивидендами
+     */
+    public function getFeeRemainingAttribute(): int
+    {
+        return max(0, (int) $this->fee - (int) $this->fee_paid);
+    }
     
     public function client(){
         return $this->belongsTo(Client::class);

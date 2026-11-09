@@ -9,6 +9,7 @@ use App\Models\Cashfund;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,7 +46,7 @@ class DealsController extends Controller
             'deals' => $deals,
             'perPage' => $perPage,
             'totals' => $totals,
-            'available' => $cash[Cashfund::CASHFUND_INVESTMENT] + $cash[Cashfund::CASHFUND_FIRSTPAYMENT] + $cash[Cashfund::CASHFUND_REPAYMENT] + $cash[Cashfund::CASHFUND_DISBURSEMENT],
+            'available' => $cash[Cashfund::CASHFUND_INVESTMENT] + $cash[Cashfund::CASHFUND_FIRSTPAYMENT] + $cash[Cashfund::CASHFUND_REPAYMENT] + $cash[Cashfund::CASHFUND_DISBURSEMENT] + $cash[Cashfund::CASHFUND_DIVIDEND],
         ]);
     }
 
@@ -62,9 +63,80 @@ class DealsController extends Controller
      * Display the specified resource.
      */
     public function show(Deal $deal){
+        // включена preventLazyLoading(): карточка использует связи, загружаем их явно
+        $deal->loadMissing(['client','schedule','repayments']);
+
         return view('deals.show', [
             'deal' => $deal,
         ]);
+    }
+
+    /**
+     * Форма вывода дивидендов по закрытому договору (только admin).
+     */
+    public function dividendForm(Deal $deal){
+        return view('deals.dividend', [
+            'deal' => $deal,
+        ]);
+    }
+
+    /**
+     * Вывод дивидендов: проводка кассы со знаком минус
+     * и списание из остатка наценки договора (fee - fee_paid).
+     */
+    public function storeDividend(Request $request, Deal $deal)
+    {
+        try {
+            $validated = $request->validate([
+                'factday' => ['required', 'date'],
+                // заполняется сумма ИЛИ процент (оба — приоритет у процента)
+                'amount' => ['required_without:percent', 'numeric', 'min:1'],
+                'percent' => ['required_without:amount', 'numeric', 'between:0.01,100'],
+                'description' => ['nullable', 'string', 'max:255'],
+                'idempotency_key' => ['required', 'uuid'],
+            ]);
+
+            // итоговая сумма вывода: из процента, если он задан, иначе как есть
+            $amount = $request->filled('percent')
+                ? (int) round($deal->fee * $request->input('percent') / 100)
+                : (int) $request->input('amount');
+
+            DB::transaction(function () use ($deal, $validated, $amount) {
+                // блокируем договор, остаток лимита считаем от актуальных значений
+                $deal = Deal::lockForUpdate()->findOrFail($deal->id);
+
+                $remaining = $deal->fee - $deal->fee_paid;
+                if ($amount <= 0 || $amount > $remaining) {
+                    throw new \Exception("Сумма вывода дивидендов не может превышать остаток по договору: {$remaining} р.");
+                }
+
+                Cashfund::create([
+                    'deal_id' => $deal->id,
+                    'summ' => -$amount,
+                    'type' => Cashfund::CASHFUND_DIVIDEND,
+                    'factday' => $validated['factday'],
+                    'description' => ($validated['description'] ?? null)
+                        ?: "Вывод дивидендов: договор №{$deal->id}",
+                    'user_id' => Auth::id(),
+                    'idempotency_key' => $validated['idempotency_key'],
+                ]);
+
+                // fee_paid обновляем через query builder, чтобы не запускать
+                // Deal::updated -> reschedule (удаляет расписание и проводки кассы)
+                DB::table('deals')->where('id', $deal->id)->update([
+                    'fee_paid' => $deal->fee_paid + $amount,
+                    'updated_at' => now(),
+                ]);
+            });
+
+            return redirect('/deals/' . $deal->id)
+                ->with('success', "Дивиденды {$amount} р. выведены по договору №{$deal->id}.");
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            return back()->withErrors(['amount' => $e->getMessage()])->withInput();
+        }
     }
 
     /**

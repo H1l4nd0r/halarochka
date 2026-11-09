@@ -14,6 +14,7 @@ class Cashfund extends Model
     const CASHFUND_FIRSTPAYMENT = 1;
     const CASHFUND_REPAYMENT = 2;
     const CASHFUND_DISBURSEMENT = 3;
+    const CASHFUND_DIVIDEND = 4;
 
     protected $guarded = [];
 
@@ -27,6 +28,7 @@ class Cashfund extends Model
             self::CASHFUND_FIRSTPAYMENT => 'Первоначальный взнос',
             self::CASHFUND_REPAYMENT => 'Оплата по графику',
             self::CASHFUND_DISBURSEMENT => 'Выдача',
+            self::CASHFUND_DIVIDEND => 'Вывод дивидендов',
             // Add more mappings as needed
         ];
     }
@@ -67,6 +69,7 @@ class Cashfund extends Model
             self::CASHFUND_FIRSTPAYMENT => 0,
             self::CASHFUND_REPAYMENT => 0,
             self::CASHFUND_DISBURSEMENT => 0,
+            self::CASHFUND_DIVIDEND => 0,
         ];
         foreach($totalsData as $subtotal){
             switch($subtotal->type){
@@ -81,6 +84,9 @@ class Cashfund extends Model
                     break;
                 case self::CASHFUND_DISBURSEMENT:
                     $totals[self::CASHFUND_DISBURSEMENT] = $subtotal->total_sum;
+                    break;
+                case self::CASHFUND_DIVIDEND:
+                    $totals[self::CASHFUND_DIVIDEND] = $subtotal->total_sum;
                     break;
             }
         }

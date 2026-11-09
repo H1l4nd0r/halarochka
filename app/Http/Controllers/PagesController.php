@@ -37,7 +37,7 @@ class PagesController extends Controller
         $monthIn = (int) Cashfund::whereIn('type', [Cashfund::CASHFUND_FIRSTPAYMENT, Cashfund::CASHFUND_REPAYMENT])
             ->where('factday', '>=', $monthStart)
             ->sum('summ');
-        $monthOut = (int) Cashfund::where('type', Cashfund::CASHFUND_DISBURSEMENT)
+        $monthOut = (int) Cashfund::whereIn('type', [Cashfund::CASHFUND_DISBURSEMENT, Cashfund::CASHFUND_DIVIDEND])
             ->where('factday', '>=', $monthStart)
             ->sum('summ'); // хранится со знаком минус
 

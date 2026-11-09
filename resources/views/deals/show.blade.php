@@ -1,6 +1,15 @@
 @extends('layouts.app')
 @section('content')
 
+@if (session('success'))
+    <div class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+        </div>
+    </div>
+@endif
+
 <div class="container mt-3">
   
 <div class="card">
@@ -31,6 +40,7 @@
             <p class="card-text">Цена товара: {{ $deal->startprice }} (р.) </p>
             <p class="card-text">Первый взнос: {{ $deal->firstpayment }} (р.) </p>
             <p class="card-text">Наценка: {{ $deal->fee }} (р.)</p>
+            <p class="card-text">Выведено дивидендов: {{ number_format($deal->fee_paid,0,'.',' ') }} (осталось: {{ number_format($deal->fee_remaining,0,'.',' ') }} р.)</p>
             <p class="card-text">Срок: {{ $deal->term }} мес </p>
             <p class="card-text">Полная стоимость рассрочки: {{ $deal->fullprice }} </p>
           </div>
@@ -110,6 +120,11 @@
       </div>  
     </div>
 
+     @if($deal->isClosed())
+        @can('admin')
+          <x-abutton href="/deals/{{ $deal->id }}/dividends">Вывести дивиденды</x-abutton>
+        @endcan
+     @endif
      @can('edit',$deal)
     <x-abutton href="/deals/{{ $deal->id }}/edit">Редактировать</x-abutton>
     @endcan
